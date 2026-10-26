@@ -1,0 +1,415 @@
+/* Retrato ampliado somente no cabeçalho das fichas de personagem e NPC. */
+:is(#form_persona, #form_npc) {
+    container-type: inline-size;
+}
+:is(#form_persona, #form_npc) > .sheet-header {
+    flex: 0 0 auto;
+}
+:is(#form_persona, #form_npc) .tagmar-identity {
+    display: grid;
+    grid-template-columns: 140px minmax(0, 1fr) auto minmax(64px, 110px);
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+}
+:is(#form_persona, #form_npc) .tagmar-identity > div {
+    min-width: 0;
+}
+:is(#form_persona, #form_npc) .tagmar-portrait {
+    display: block;
+    width: 140px;
+    height: 140px;
+    max-width: 100%;
+    object-fit: contain;
+    object-position: center;
+    margin: 0;
+    border-radius: 8px;
+}
+:is(#form_persona, #form_npc) .tagmar-portrait[role="button"] {
+    cursor: pointer;
+}
+:is(#form_persona, #form_npc) .tagmar-portrait:focus-visible {
+    outline: 2px solid #e9a343;
+    outline-offset: 2px;
+}
+:is(#form_persona, #form_npc) .tagmar-identity .fairyDust {
+    margin: 0;
+}
+:is(#form_persona, #form_npc) .tagmar-stage-label {
+    text-align: center;
+}
+@container (max-width: 600px) {
+    :is(#form_persona, #form_npc) .tagmar-identity {
+        grid-template-columns: 140px minmax(0, 1fr) minmax(64px, 100px);
+        gap: 8px;
+    }
+    :is(#form_persona, #form_npc) .tagmar-portrait-cell {
+        grid-row: 1 / 3;
+    }
+    :is(#form_persona, #form_npc) .tagmar-name {
+        grid-column: 2 / 4;
+    }
+}
+
+@font-face {
+    font-family: 'FairyDustB';
+    src: url('../fonts/PrinceValiant.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'GoudyMediaeval';
+    src: url('../fonts/NewRocker-Regular.ttf') format('truetype');
+}
+.form_tagmar input[type="text"] {
+    font-family: "GoudyMediaeval";
+}
+.form_tagmar input[type="number"] {
+    font-family: "GoudyMediaeval";
+}
+.form_tagmar option {
+    font-family: "GoudyMediaeval";
+}
+.form_tagmar select {
+    font-family: "GoudyMediaeval";
+}
+.form_tagmar input[name="name"] {
+    font-family: "FairyDustB";
+}
+.form_tagmar table {
+    margin-bottom: 1px !important;
+    margin-top: 1px !important;
+}
+.form_tagmar a:hover{
+    cursor: url(/systems/tagmar_rpg/assets/cursor/xp-middle-finger.cur), auto;
+}
+.form_tagmar button:hover{
+    cursor: url(/systems/tagmar_rpg/assets/cursor/xp-middle-finger.cur), auto;
+}
+#chat-controls label:hover {
+    cursor: url(/systems/tagmar_rpg/assets/cursor/xp-middle-finger.cur), auto;
+}
+.mid-cursor:hover {
+    cursor: url(/systems/tagmar_rpg/assets/cursor/xp-middle-finger.cur), auto;
+}
+.form_tagmar input:read-only {
+    border-width: 0;
+    background-color: rgba(0,0,0,0);
+}
+.form_tagmar .editor {
+    padding: 0 8px;
+    height: 100%;
+    min-height: 200px;
+    font-family: "GoudyMediaeval";
+}
+.form_tagmar .editor span {
+    font-family: "GoudyMediaeval" !important;
+}
+.form_tagmar .editor strong {
+    color:rgb(94, 8, 8);
+}
+.form_tagmar .editor b {
+    color:rgb(94, 8, 8);
+}
+.form_tagmar nav label{
+    width: 100% !important;
+
+}
+.fairyDust{
+    font-family: "FairyDustB";
+    font-size: 205%;
+    font-weight: bolder;
+}
+.mediaeval {
+    font-family: "GoudyMediaeval";
+    font-size: 95%;
+}
+.dados {
+    padding: 2px 0;
+}
+.container_dados {
+    border: 6px solid transparent;
+    border-image-source: url(/systems/tagmar_rpg/templates/sheets/img/panel1.png);
+    border-image-slice: 20;
+}
+.cont-dir {
+    margin: 5px 0;
+}
+.dados-dir {
+    border: 2px groove black;
+    margin-left: 5px;
+    padding: 5px 5px;
+}
+.itemImg {
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+}
+.rollable:hover,
+.rollable:focus {
+    color: #000;
+    text-shadow: 0 0 10px red;
+    cursor: pointer;
+}
+.creditos:hover,
+.creditos:focus {
+    color: rgb(94, 8, 8);
+    text-shadow: 0 0 10px black;
+}
+.creditos {
+    color: gray;
+    font-size: 90%;
+}
+.armaImg:hover,
+.armaImg:focus {
+    cursor: pointer;
+}
+.hiddenT {
+    visibility: hidden;
+}
+.hide {
+    color: transparent !important;
+}
+.esconde {
+    display: none !important;
+}
+.imgItem {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+}
+.tagmarLogo {
+    border-style: none; 
+    padding-top:2px; 
+}
+.rola {
+    font-size: 150%;
+}
+.rola_desc {
+    font-size: 100%;
+}
+.rola_desc_combate,
+.rola_desc_combate p {
+    font-size: 115% !important;
+}
+.rola_desc b {
+    color:rgb(94, 8, 8);
+    font-size: 105%;
+}
+.rola_desc strong {
+    color:rgb(94, 8, 8);
+}
+.Negrito {
+    color:rgb(94, 8, 8);
+    font-size: 120%;
+    font-weight: bolder;
+}
+.rola_desc u {
+    color:rgb(94, 8, 8);
+    font-size: 105%;
+}
+.rola_dano {
+    animation: blinking 1s 3;  /* IE 10+, Fx 29+ */
+    background-color: rgb(0, 0, 0);
+    color: white;
+}
+.aplicarDano {
+    margin-bottom: 5px;
+}
+
+/* Foundry V13: impede que a classe .col do Bootstrap desloque a coluna
+   direita do HUD para baixo do token. */
+#token-hud .col.left {
+    position: absolute;
+    top: -50px;
+    left: calc(-1 * var(--column-width) - 8px);
+    right: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 8px;
+    width: var(--column-width);
+    height: calc(100% + 100px);
+    max-width: none;
+    padding: 0;
+    margin: 0;
+    flex: 0 0 auto;
+}
+
+#token-hud .col.right {
+    position: absolute;
+    top: -50px;
+    right: calc(-1 * var(--column-width) - 8px);
+    left: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 8px;
+    width: var(--column-width);
+    height: calc(100% + 100px);
+    max-width: none;
+    padding: 0;
+    margin: 0;
+    flex: 0 0 auto;
+}
+
+@keyframes blinking {
+0%, 49% {
+    background-color: rgb(0, 0, 0);
+    color: white;
+}
+50%, 100% {
+    background-color: #ffffff;
+    color: black;
+}
+}
+.item-copy {
+    margin-right: 2px;
+}
+.borda-m .container_dados {
+    border-image-source: url(/systems/tagmar_rpg/templates/sheets/img/panel2.png);
+}
+.bg-img {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Borda Dos Livros Tagmar 3.0.png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-anao {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Guerreiro - Anão  (Sergio Artigas).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-barda {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Barda - Meio-Elfa (Antomio Jironimo Bizerril Neto).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-bardo {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Bardo - Meio-Elfo (Claudio Souza).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-gana {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Guerreira - Anã (Berbert).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-ghuma {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Guerreira - Humana  (Jorge Paiva).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-ghumk {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Guerreira - Humana (Jorge Kenko).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-lhuma {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Ladina Humana (Licinio Souza).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-lpeqa {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Ladina Pequenina (Licinio Souza).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-lpeq {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Ladinio - Pequenino (Antomio Jironimo Bizerril Neto).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-lhum {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Ladino - Humano (Luiz Berbert).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-melfa {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Maga - Elfa (Luis Berbert).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-mhuma {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Maga - Humana (Antomio Jironimo Bizerril Neto).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-melfo {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Mago - Elfo (Antomio Jironimo Bizerril Neto).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-pap {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Papiros (Licinio Souza).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-relf {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Rastreador Elfo (Sergio Artigas).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-rhuma {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Rastreadora Humana (Sergio Artigas).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-shum {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Sacerdote Humano (Luis Berbert).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-shumv {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Sacerdote Humano Velho (Luis Berbert).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-selfa {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Sacerdotisa Elfa Dourada (Licinio Souza).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-shum1 {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Sacerdotiza - Humana (marlon souza).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-shum2 {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/Sacerdotiza Humana (Sergio Artigas).png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.bg-img-items {
+    background-image: url('/systems/tagmar_rpg/templates/sheets/img/fundo_items.png');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+
+/* Identifica visualmente o compêndio clássico mantido apenas para consulta. */
+.directory-item:is(
+    [data-pack="tagmar_rpg.criando-fichas"],
+    [data-pack="tagmar_rpg.terras-selvagens"],
+    [data-pack="tagmar_rpg.criaturas-e-arquetipos-sem-tecnicas"]
+) > .compendium-banner,
+[data-pack="tagmar_rpg.criando-fichas"] .compendium-banner,
+[data-pack="tagmar_rpg.terras-selvagens"] .compendium-banner,
+[data-pack="tagmar_rpg.criaturas-e-arquetipos-sem-tecnicas"] .compendium-banner {
+    filter: grayscale(100%) brightness(45%) contrast(85%) !important;
+    opacity: 0.72;
+}
+.efeito-atributo-valor {
+  font-weight: 700;
+  text-align: center;
+}
+
+.efeito-atributo-positivo {
+  color: #2e9d52 !important;
+}
+
+.efeito-atributo-negativo {
+  color: #d9534f !important;
+}
+
+.efeito-atributo-neutro {
+  opacity: 0.72;
+}

@@ -1,0 +1,14 @@
+{
+  "systemVersion": "2.7.0-v14.1-rc.52",
+  "hashes": {
+    "modules/sheets/actorUtils.js": "014f1cc1192319f62d3b93b6086bb165fbf1725d7835107fd7094fdf4d861cf0",
+    "templates/sheets/personagem-sheet.hbs": "cbd53cae77b9b2c04accd103e7dd86e69a9b79f9f7cefd9ef51c41f815201f03",
+    "templates/sheetsPoints/personagem-sheet.hbs": "2c428d435ac857c0a7087e1c63729b325e3ffaaea821c9d5ac2b01b16de045eb",
+    "template.json": "e2b2f8b6d679a889f20ff038efcbd620146d92669e74a1f9b7cb33b4d4cdf568",
+    "css/bootstrap-grid.css": "4751925ded4a19751b0792d191cc036c19e80b68ff52054605c4769b13a38c6f",
+    "css/sheet.css": "c886cca82f50869d8585cc85c7aa908425d0ccb620cc801dc9738b1b2e29c063",
+    "css/foundry-sheet.css": "a58a65f21db8ea9adfc3deae77c5fe4783311b26bbc994018f5de87d748b5bb3",
+    "templates/sheets/img/logo.png": "17d2cb2b98aa67121281f5cea44e17909e5d46fcd5fc4c44cf359278c8d42be0",
+    "LICENSE.md": "a970836939dbb42838dfb0f718619bce0d14f6602fcf96c37adc49b70baa8fbb"
+  }
+}

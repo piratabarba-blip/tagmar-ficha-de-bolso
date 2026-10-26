@@ -1,0 +1,16 @@
+{
+  "name": "tagmar-ficha-de-bolso",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Editor offline de personagens Tagmar exportados em JSON",
+  "scripts": {
+    "build": "node tools/build.cjs",
+    "test": "node --test tests/model.test.mjs",
+    "test:browser": "node tests/browser.cjs"
+  },
+  "devDependencies": {
+    "handlebars": "4.7.9",
+    "playwright": "^1.56.0"
+  },
+  "engines": { "node": ">=22" }
+}

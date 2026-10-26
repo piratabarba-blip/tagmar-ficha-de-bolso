@@ -1,0 +1,370 @@
+{
+  "Actor": {
+    "types": ["Personagem", "NPC", "Inventario"],
+    "templates": {
+      "base": {
+        "descricao": "",
+        "raca": "",
+        "profissao": "",
+        "estagio": 1,
+        "especializacao": "",
+        "atributos": {
+          "INT": 0,
+          "AUR": 0,
+          "CAR": 0,
+          "FOR": 0,
+          "FIS": 0,
+          "AGI": 0,
+          "PER": 0
+        },
+        "valor_teste": {
+          "INT": 0,
+          "AUR": 0,
+          "CAR": 0,
+          "FOR": 0,
+          "FIS": 0,
+          "AGI": 0,
+          "PER": 0
+        },
+        "eh": {
+          "value": 0,
+          "min": 0,
+          "max": 0,
+          "bonusFis": 0,
+          "deficitFis": 0
+        },
+        "absorcao": {
+          "value": 0,
+          "min": 0,
+          "max": 0
+        },
+        "ef": {
+          "value": 0,
+          "min": 0,
+          "max": 0
+        },
+        "karma": {
+          "value": 0,
+          "min": 0,
+          "max": 0
+        },
+        "defesa": {
+          "categoria": "",
+          "valor": 0
+        },
+        "focus": {
+          "value": 0,
+          "min": 0,
+          "max": 0
+        },
+        "vb": 0,
+        "vbe": 0,
+        "rm": 0,
+        "rf": 0,
+        "iniciativa": 0,
+        "d_ativa": {
+          "valor": 0,
+          "categoria": ""
+        },
+        "d_passiva": {
+          "valor": 0,
+          "categoria": ""
+        },
+        "v_base": 0,
+        "grupos": {
+          "CD": 0,
+          "CI": 0,
+          "CL": 0,
+          "CLD": 0,
+          "EL": 0,
+          "CmE": 0,
+          "CmM": 0,
+          "EM": 0,
+          "PmA": 0,
+          "PmL": 0,
+          "CpE": 0,
+          "CpM": 0,
+          "EP": 0,
+          "PP": 0,
+          "PpA": 0,
+          "PpB": 0
+        },
+        "pontos_aqui": 0,
+        "max_hab": 0,
+        "pontos_comb": 0,
+        "pontos_tec": 0,
+        "pontos_mag": 0,
+        "idade": 0,
+        "altura": "",
+        "peso": 0,
+        "carga": {
+          "value": 0,
+          "max": 0,
+          "sobrecarga": false,
+          "valor_s": 0
+        },
+        "classe_social": "",
+        "deus": "",
+        "pontos_estagio": {
+          "value": 0,
+          "next": 0
+        },
+        "dinheiro": {
+          "mo": 0,
+          "mp": 0,
+          "mc": 0
+        },
+        "combos": "",
+        "carga_transp": {
+          "max": 0,
+          "value": 0,
+          "hasTransp": false
+        },
+        "carac_sort": {
+          "INT": 0,
+          "AUR": 0,
+          "CAR": 0,
+          "FOR": 0,
+          "FIS": 0,
+          "AGI": 0,
+          "PER": 0
+        },
+        "carac_final": {
+          "INT": 0,
+          "AUR": 0,
+          "CAR": 0,
+          "FOR": 0,
+          "FIS": 0,
+          "AGI": 0,
+          "PER": 0
+        },
+        "mod_racial": {
+          "INT": 0,
+          "AUR": 0,
+          "CAR": 0,
+          "FOR": 0,
+          "FIS": 0,
+          "AGI": 0,
+          "PER": 0
+        },
+        "inf_ataque": {
+          "cat_def": "",
+          "valor_def": 0,
+          "bonus": 0
+        },
+        "bonus_habil": 0,
+        "hab_nata": ""
+      }
+    },
+    "Personagem": {
+      "templates": ["base"],
+      "grupo_aprim": ""
+    },
+    "NPC": {
+      "templates": ["base"],
+      "moral": 0,
+      "karma_npc": {
+        "value": 0,
+        "min": 0,
+        "max": 0
+      },
+      "eh_npc": {
+        "value": 0,
+        "min": 0,
+        "max": 0
+      },
+      "ef_npc": {
+        "value": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "Inventario": {
+      
+    }
+  },
+  "Item": {
+    "types": ["Combate", "Magia","Habilidade","Defesa","Transporte","Pertence", "Profissao", "Raca", "Efeito", "Tecnica_Combate"],
+    "templates": {
+      "base": {
+        "alcance": "",
+        "descricao": "",
+        "favorito": false
+      },
+      "custoNivel": {
+        "custo": 0,
+        "nivel": 0
+      }
+    },
+    "Combate": {
+      "templates": ["base", "custoNivel"],
+      "forca_min": 0,
+      "bonus": "",
+      "bonus_dano": "",
+      "peso": 0,
+      "preco": "",
+      "bonus_magico": 0,
+      "def_l": 0,
+      "def_m": 0,
+      "def_p": 0,
+      "dano": {
+        "d25": 0,
+        "d50": 0,
+        "d75": 0,
+        "d100": 0,
+        "d125": 0,
+        "d150": 0,
+        "d175": 0,
+        "d200": 0,
+        "d225": 0,
+        "d250": 0,
+        "d275": 0,
+        "d300": 0
+      },
+      "dano_base": {
+        "d25": 0,
+        "d50": 0,
+        "d75": 0,
+        "d100": 0,
+        "d125": 0,
+        "d150": 0,
+        "d175": 0,
+        "d200": 0,
+        "d225": 0,
+        "d250": 0,
+        "d275": 0,
+        "d300": 0
+      },
+      "penalidade": {
+        "p25": false,
+        "p50": false,
+        "p75": false,
+        "p100": false
+      },
+      "tipo": "",
+      "municao": 0
+    },"TecnicasCombate": {
+      "templates": ["custoNivel"]
+    },
+    "Tecnica_Combate": {
+      "templates": ["custoNivel"],
+      "descricao": "",
+      "ajuste": {
+        "atributo": "",
+        "valor": 0
+      },
+      "fa": 0,
+      "mecanica": 0,
+      "duracao": {
+        "valor": 0,
+        "tipo": "Ataque(s)"
+      },
+      "teste": "Não",
+      "restricao": "",
+      "pre_requisito": {
+        "valor": "Não",
+        "tecnica": ""
+      },
+      "complemento": "Não",
+      "bonus": 0
+    },
+    "Magia": {
+      "templates": ["base", "custoNivel"],
+      "evocacao": "",
+      "duracao": "",
+      "efeito": "",
+      "total": {
+        "valor": 0,
+        "valorKarma": 0
+      }
+    },
+    "Habilidade": {
+      "templates": ["custoNivel"],
+      "ajuste":{
+        "atributo": "",
+        "valor": 0
+      },
+      "penalidade": 0,
+      "bonus": 0,
+      "total": 0,
+      "tipo": "",
+      "custoAdd": {
+        "profissao": "",
+        "valor": 0
+      },
+      "hab_nata": false,
+      "descricao": "",
+      "tarefAperf": "",
+      "nao_rolar_sem_nivel": false
+    },
+    "Defesa": {
+      "defesa_base": {
+        "tipo": "",
+        "valor": 0
+      },
+      "absorcao": 0,
+      "fis_min": 0,
+      "for_min": 0,
+      "peso": 0,
+      "preco": "",
+      "descricao": "",
+      "equipado": true
+    },
+    "Transporte": {
+      "capacidade": {
+        "carga": 0,
+        "pessoas": 0
+      },
+      "preco": "",
+      "descricao": ""
+    },
+    "Pertence": {
+      "quant": 0,
+      "descricao": "",
+      "peso": 0,
+      "preco": "",
+      "inTransport": false
+    },
+    "Profissao": {
+      "especializacoes": "",
+      "eh_base": 0,
+      "lista_eh": {
+        "v1": 0,
+        "v2": 0,
+        "v3": 0,
+        "v4": 0
+      },
+      "descricao": "",
+      "hab_nata": "",
+      "grupo_pen": "",
+      "p_aquisicao": {
+        "p_hab": 0,
+        "p_tec": 0,
+        "p_gra": 0,
+        "p_mag": 0
+      },
+      "atrib_mag": "",
+      "grupo_aprim": false
+    },
+    "Raca": {
+      "descricao": "",
+      "mod_racial": {
+        "INT": 0,
+        "AUR": 0,
+        "CAR": 0,
+        "FOR": 0,
+        "FIS": 0,
+        "AGI": 0,
+        "PER": 0
+      },
+      "ef_base": 0,
+      "vb": 0
+    },
+    "Efeito": {
+      "atributo": "",
+      "tipo": "",
+      "valor": 0,
+      "ativo": false
+    }
+  }
+}

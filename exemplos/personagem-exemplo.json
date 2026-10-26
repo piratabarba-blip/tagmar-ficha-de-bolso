@@ -1,0 +1,326 @@
+{
+  "_id": "YnUuaWHMGjTsiLBl",
+  "name": "Elarion — exemplo",
+  "type": "Personagem",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "descricao": "<p>Personagem fictício para experimentar o editor. Troque pelo JSON exportado da sua mesa.</p>",
+    "raca": "Humano",
+    "profissao": "Guerreiro",
+    "estagio": 3,
+    "especializacao": "",
+    "atributos": {
+      "INT": 1,
+      "AUR": 0,
+      "CAR": 1,
+      "FOR": 2,
+      "FIS": 2,
+      "AGI": 1,
+      "PER": 1
+    },
+    "valor_teste": {
+      "INT": 4,
+      "AUR": 0,
+      "CAR": 4,
+      "FOR": 8,
+      "FIS": 8,
+      "AGI": 4,
+      "PER": 4
+    },
+    "eh": {
+      "value": 18,
+      "max": 24,
+      "min": 0,
+      "bonusFis": 0,
+      "deficitFis": 0
+    },
+    "absorcao": {
+      "value": 0,
+      "min": 0,
+      "max": 0
+    },
+    "ef": {
+      "value": 18,
+      "min": 0,
+      "max": 20
+    },
+    "karma": {
+      "value": 0,
+      "min": 0,
+      "max": 0
+    },
+    "defesa": {
+      "categoria": "",
+      "valor": 0
+    },
+    "focus": {
+      "value": 0,
+      "min": 0,
+      "max": 0
+    },
+    "vb": 22,
+    "vbe": 0,
+    "rm": 3,
+    "rf": 5,
+    "iniciativa": 0,
+    "d_ativa": {
+      "valor": 1,
+      "categoria": "L"
+    },
+    "d_passiva": {
+      "valor": 0,
+      "categoria": "L"
+    },
+    "v_base": 0,
+    "grupos": {
+      "CD": 0,
+      "CI": 0,
+      "CL": 2,
+      "CLD": 0,
+      "EL": 0,
+      "CmE": 0,
+      "CmM": 0,
+      "EM": 0,
+      "PmA": 0,
+      "PmL": 0,
+      "CpE": 0,
+      "CpM": 0,
+      "EP": 0,
+      "PP": 0,
+      "PpA": 0,
+      "PpB": 0
+    },
+    "pontos_aqui": 28,
+    "max_hab": 11,
+    "pontos_comb": 13,
+    "pontos_tec": 12,
+    "pontos_mag": 0,
+    "idade": 0,
+    "altura": "",
+    "peso": 0,
+    "carga": {
+      "value": 2.5,
+      "max": 60,
+      "sobrecarga": false,
+      "valor_s": 0
+    },
+    "classe_social": "",
+    "deus": "",
+    "pontos_estagio": {
+      "value": 31,
+      "next": 31
+    },
+    "dinheiro": {
+      "mo": 0,
+      "mp": 0,
+      "mc": 0
+    },
+    "combos": "",
+    "carga_transp": {
+      "max": 0,
+      "value": 0,
+      "hasTransp": false
+    },
+    "carac_sort": {
+      "INT": 1,
+      "AUR": 0,
+      "CAR": 1,
+      "FOR": 3,
+      "FIS": 3,
+      "AGI": 1,
+      "PER": 1
+    },
+    "carac_final": {
+      "INT": 7,
+      "AUR": 0,
+      "CAR": 0,
+      "FOR": 0,
+      "FIS": 0,
+      "AGI": 0,
+      "PER": 0
+    },
+    "mod_racial": {
+      "INT": 0,
+      "AUR": 0,
+      "CAR": 0,
+      "FOR": 0,
+      "FIS": 0,
+      "AGI": 0,
+      "PER": 0
+    },
+    "inf_ataque": {
+      "cat_def": "",
+      "valor_def": 0,
+      "bonus": 0
+    },
+    "bonus_habil": 0,
+    "hab_nata": "",
+    "grupo_aprim": ""
+  },
+  "items": [
+    {
+      "_id": "u0UZoAJFHxLwEEsB",
+      "name": "Humano",
+      "type": "Raca",
+      "img": "icons/svg/item-bag.svg",
+      "system": {
+        "descricao": "",
+        "mod_racial": {
+          "INT": 0,
+          "AUR": 0,
+          "CAR": 0,
+          "FOR": 0,
+          "FIS": 0,
+          "AGI": 0,
+          "PER": 0
+        },
+        "ef_base": 16,
+        "vb": 20
+      },
+      "effects": [],
+      "flags": {}
+    },
+    {
+      "_id": "yzCZBpLyRcK4C8UY",
+      "name": "Guerreiro",
+      "type": "Profissao",
+      "img": "icons/svg/item-bag.svg",
+      "system": {
+        "especializacoes": "",
+        "eh_base": 0,
+        "lista_eh": {
+          "v1": 3,
+          "v2": 4,
+          "v3": 5,
+          "v4": 6
+        },
+        "descricao": "",
+        "hab_nata": "",
+        "grupo_pen": "conhecimento",
+        "p_aquisicao": {
+          "p_hab": 10,
+          "p_tec": 4,
+          "p_gra": 5,
+          "p_mag": 0
+        },
+        "atrib_mag": "",
+        "grupo_aprim": false
+      },
+      "effects": [],
+      "flags": {}
+    },
+    {
+      "_id": "lh1tcs4lFRZRD6kN",
+      "name": "Escalar",
+      "type": "Habilidade",
+      "img": "icons/svg/item-bag.svg",
+      "system": {
+        "custo": 1,
+        "nivel": 2,
+        "ajuste": {
+          "atributo": "AGI",
+          "valor": 1
+        },
+        "penalidade": 0,
+        "bonus": 0,
+        "total": 3,
+        "tipo": "manobra",
+        "custoAdd": {
+          "profissao": "",
+          "valor": 0
+        },
+        "hab_nata": false,
+        "descricao": "",
+        "tarefAperf": "",
+        "nao_rolar_sem_nivel": false
+      },
+      "effects": [],
+      "flags": {}
+    },
+    {
+      "_id": "RlLKgg6GjEIdGGIX",
+      "name": "Rações de viagem",
+      "type": "Pertence",
+      "img": "icons/svg/item-bag.svg",
+      "system": {
+        "quant": 5,
+        "descricao": "",
+        "peso": 0.5,
+        "preco": "1 mp",
+        "inTransport": false
+      },
+      "effects": [],
+      "flags": {}
+    },
+    {
+      "_id": "28teFVTyQeDUIPmx",
+      "name": "Espada de exemplo",
+      "type": "Combate",
+      "img": "icons/svg/item-bag.svg",
+      "system": {
+        "alcance": "",
+        "descricao": "",
+        "favorito": false,
+        "custo": 2,
+        "nivel": 2,
+        "forca_min": 0,
+        "bonus": "FOR",
+        "bonus_dano": "FOR",
+        "peso": 0,
+        "preco": "",
+        "bonus_magico": 0,
+        "def_l": 0,
+        "def_m": 0,
+        "def_p": 0,
+        "dano": {
+          "d25": 3,
+          "d50": 4,
+          "d75": 5,
+          "d100": 6,
+          "d125": 7,
+          "d150": 8,
+          "d175": 9,
+          "d200": 10,
+          "d225": 11,
+          "d250": 12,
+          "d275": 13,
+          "d300": 14
+        },
+        "dano_base": {
+          "d25": 1,
+          "d50": 2,
+          "d75": 3,
+          "d100": 4,
+          "d125": 5,
+          "d150": 6,
+          "d175": 7,
+          "d200": 8,
+          "d225": 9,
+          "d250": 10,
+          "d275": 11,
+          "d300": 12
+        },
+        "penalidade": {
+          "p25": false,
+          "p50": false,
+          "p75": false,
+          "p100": false
+        },
+        "tipo": "CL",
+        "municao": 0
+      },
+      "effects": [],
+      "flags": {}
+    }
+  ],
+  "effects": [],
+  "flags": {
+    "core": {
+      "sheetClass": "tagmar.tagmarAltSheet"
+    }
+  },
+  "_stats": {
+    "systemId": "tagmar_rpg",
+    "systemVersion": "2.7.0-v14.1-rc.52"
+  }
+}

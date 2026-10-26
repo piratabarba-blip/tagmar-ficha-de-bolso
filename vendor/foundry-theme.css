@@ -1,0 +1,32 @@
+/* Tema alternativo inspirado na interface nativa do Foundry VTT V14. */
+.tagmar-foundry-sheet{--tf-bg:#0c0911;--tf-panel:#17121d;--tf-panel-2:#211a26;--tf-field:#342c36;--tf-line:#64525f;--tf-accent:#d6b8a5;--tf-text:#e3d6ce;--tf-muted:#b79e90;font-family:var(--font-primary,"Signika",sans-serif)!important}
+.tagmar-foundry-sheet .window-header{color:var(--tf-text)!important;background:#09070c!important;border:1px solid #5e4756!important;border-bottom-color:#8f6e7f!important}
+.tagmar-foundry-sheet .window-title{color:#f0e5de!important;font-family:var(--font-primary,"Signika",sans-serif)!important;font-weight:700}
+.tagmar-foundry-sheet .window-content{color:var(--tf-text)!important;background:linear-gradient(145deg,#100c15,var(--tf-bg))!important;border:1px solid #5e4756!important;border-top:0!important}
+.tagmar-foundry-sheet form,.tagmar-foundry-sheet .form_tagmar,.tagmar-foundry-sheet .sheet-primary{color:var(--tf-text)!important;background:transparent!important;font-family:var(--font-primary,"Signika",sans-serif)!important}
+.tagmar-foundry-sheet *:not(i){font-family:var(--font-primary,"Signika",sans-serif)!important}
+.tagmar-foundry-sheet h1,.tagmar-foundry-sheet h2,.tagmar-foundry-sheet h3,.tagmar-foundry-sheet h4,.tagmar-foundry-sheet label,.tagmar-foundry-sheet p,.tagmar-foundry-sheet span,.tagmar-foundry-sheet td{color:var(--tf-text)}
+.tagmar-foundry-sheet h1,.tagmar-foundry-sheet h2,.tagmar-foundry-sheet h3{border-color:#5e4756!important}
+.tagmar-foundry-sheet label,.tagmar-foundry-sheet th,.tagmar-foundry-sheet .Negrito{color:var(--tf-accent)!important;font-weight:700}
+.tagmar-foundry-sheet a{color:#d9b7a4!important}
+.tagmar-foundry-sheet a:hover{color:#fff1e8!important;text-shadow:0 0 7px rgba(214,184,165,.3)!important}
+.tagmar-foundry-sheet input,.tagmar-foundry-sheet select,.tagmar-foundry-sheet textarea{color:#f0e7e1!important;background:var(--tf-field)!important;border:1px solid var(--tf-line)!important;border-radius:4px!important;box-shadow:inset 0 1px 3px rgba(0,0,0,.45)!important}
+.tagmar-foundry-sheet input::placeholder,.tagmar-foundry-sheet textarea::placeholder{color:#9a8790!important}
+.tagmar-foundry-sheet input:focus,.tagmar-foundry-sheet select:focus,.tagmar-foundry-sheet textarea:focus{border-color:#b78fa6!important;box-shadow:0 0 0 2px rgba(183,143,166,.16)!important}
+.tagmar-foundry-sheet .form_tagmar input:read-only{color:#d4c6bd!important;background:#241e28!important;border:1px solid #51434e!important}
+.tagmar-foundry-sheet option{color:#ede2db!important;background:#2f2731!important}
+.tagmar-foundry-sheet nav,.tagmar-foundry-sheet .tabs{background:#0b0810!important;border:1px solid #5e4756!important;border-radius:4px}
+.tagmar-foundry-sheet nav a,.tagmar-foundry-sheet .tabs a{color:#bca99d!important;border-right:1px solid #493b45}
+.tagmar-foundry-sheet nav a.active,.tagmar-foundry-sheet .tabs a.active{color:#fff4ec!important;background:#493441!important;text-shadow:none!important}
+.tagmar-foundry-sheet table{color:var(--tf-text)!important;background:rgba(19,14,23,.72)!important;border-color:#4d3f49!important}
+.tagmar-foundry-sheet table thead,.tagmar-foundry-sheet table th{color:var(--tf-accent)!important;background:#17121d!important;border-color:#5b4b56!important}
+.tagmar-foundry-sheet table tr:nth-child(even){background:rgba(50,40,52,.62)!important}
+.tagmar-foundry-sheet table tr:nth-child(odd){background:rgba(27,21,31,.62)!important}
+.tagmar-foundry-sheet table td{border-color:#4d3f49!important}
+.tagmar-foundry-sheet button{color:#eadfd8!important;background:linear-gradient(180deg,#352b35,#211a25)!important;border:1px solid #8c6c7d!important;border-radius:4px!important}
+.tagmar-foundry-sheet button:hover{border-color:#d6b8a5!important;box-shadow:0 0 7px rgba(214,184,165,.22)!important}
+.tagmar-foundry-sheet .container_dados,.tagmar-foundry-sheet .dados-dir,.tagmar-foundry-sheet .cont-dir{color:var(--tf-text)!important;background:rgba(27,21,31,.84)!important;border-color:#5b4b56!important;border-image:none!important;border-radius:5px}
+.tagmar-foundry-sheet .editor,.tagmar-foundry-sheet .editor-content,.tagmar-foundry-sheet prose-mirror{color:var(--tf-text)!important;background:#17121d!important;border-color:#5b4b56!important}
+.tagmar-foundry-sheet .editor strong,.tagmar-foundry-sheet .editor b,.tagmar-foundry-sheet .rola_desc strong,.tagmar-foundry-sheet .rola_desc b,.tagmar-foundry-sheet .rola_desc u{color:#dfbca8!important}
+.tagmar-foundry-sheet .item-list .item,.tagmar-foundry-sheet .items-list .item{background:rgba(35,27,39,.88)!important;border-color:#4d3f49!important}
+.tagmar-foundry-sheet .creditos{color:#998a82!important}
