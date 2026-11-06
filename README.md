@@ -1,10 +1,12 @@
-# Tagmar — Ficha de Bolso 1.0
+# Tagmar — Ficha de Bolso 1.1
 
 Editor local para criar, consultar e editar personagens do Tagmar fora do Foundry. Comece no estágio 1 ou abra uma ficha exportada. Ao terminar, baixe o JSON para levar à mesa.
 
 Abra o editor no navegador ou na versão portátil para Windows. Você pode montar ou consultar seu personagem com o Foundry do mestre fechado. O editor funciona offline e os arquivos ficam no seu computador.
 
-**[Baixar o portátil para Windows (.exe)](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.0.0/Tagmar-Ficha-de-Bolso.exe)** · **[Baixar o editor HTML](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.0.0/Ficha.de.Bolso.html)** · [Baixar o pacote ZIP](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.0.0/tagmar-ficha-de-bolso-1.0.0.zip)
+**[Baixar o portátil para Windows (.exe)](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.1.0/Tagmar-Ficha-de-Bolso.exe)** · **[Baixar o editor HTML](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.1.0/Ficha.de.Bolso.html)** · [Baixar o pacote ZIP](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.1.0/tagmar-ficha-de-bolso-1.1.0.zip)
+
+Na **1.1**, as categorias e subpastas do Compêndio abrem e recolhem na própria lateral. Clique em **Raças** e depois em **Profissões** para alternar entre elas sem usar **Voltar**. [Histórico de versões](CHANGELOG.md)
 
 ![Ficha de exemplo com as abas no estilo do Foundry e o Compêndio de armas aberto na lateral direita](docs/ficha-compendio.png)
 
@@ -58,7 +60,7 @@ Use **+** e **−** na linha de uma habilidade, técnica de combate ou magia par
 - O menu **Dados avançados** permite editar o JSON completo, incluindo campos especiais não exibidos nas abas.
 - Use **Desfazer** e **Refazer** para voltar até 30 operações.
 
-O **Compêndio** da lateral inclui 2.369 entradas de **Criação de Fichas** e **Terras Selvagens**. Escolha a categoria, abra a coleção e navegue pelas pastas de origem. A busca percorre a pasta aberta e suas subpastas. Arraste um resultado para a ficha ou clique em **+** para adicionar uma cópia editável. Para substituir a raça ou a profissão, confirme a troca.
+O **Compêndio** da lateral inclui 2.369 entradas de **Criação de Fichas** e **Terras Selvagens**. Clique numa categoria ou pasta para expandir na própria lista e clique de novo para recolher. A busca percorre a categoria selecionada ou o Compêndio inteiro quando o filtro está em **Todas as categorias**. Arraste um resultado para a ficha ou clique em **+** para adicionar uma cópia editável. Para substituir a raça ou a profissão, confirme a troca.
 
 Em **03 - Habilidades**, use **Adicionar habilidades comuns** ou abra uma das seis pastas e escolha **Adicionar grupo**. A ficha mantém as habilidades que você já tem e adiciona somente as que faltam. Habilidades novas começam sem treino. A criação manual continua disponível.
 
@@ -96,7 +98,7 @@ Imagens que estão no servidor Foundry não são carregadas pela rede. O caminho
 - Interface voltada a computador; em telas pequenas algumas tabelas precisam de rolagem horizontal.
 - Limites: ficha de até 20 MB, até 5.000 itens e estágio de 1 a 100. Valores extremos de atributos não são aceitos nos cálculos automáticos.
 
-## Validação da versão 1.0
+## Validação da versão 1.1
 
 Testes automatizados de cálculos, progressão, efeitos Tagmar, desfazer/refazer, validação de arquivos e preservação de metadados. Teste real no Chrome com o HTML aberto por `file://`, rede desativada, todas as abas, edição e criação de item, busca, mudança de apresentação, recuperação de rascunho, dois modos de ficha, download e reabertura de JSON. Verificação de conteúdo HTML malicioso sem execução e sem requisições de rede.
 
@@ -104,7 +106,7 @@ A reimportação de uma ficha criada no editor foi conferida em uma mesa do Tagm
 
 ## Código-fonte e reprodução
 
-O código-fonte do executável e as instruções de compilação estão no [pacote fonte do portátil](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.0.0/Tagmar-Ficha-de-Bolso-Fonte-Portatil.zip).
+O código-fonte do executável e as [instruções de compilação](tools/portable/README.md) também acompanham o pacote ZIP.
 
 Base de desenvolvimento: Tagmar XXX `2.7.0-v14.1-rc.52`, para Foundry V14. As funções de cálculo e o esquema foram comparados com a cópia local do Tagmar 3ER Oficial e não apresentaram diferenças. Os hashes dos arquivos de origem estão em `vendor/provenance.json`.
 

@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 1.1.0 — 06/11/2026
+
+- As dez categorias e suas subpastas agora abrem e recolhem na própria lateral, como no Compêndio do Foundry. As demais categorias continuam à vista e o botão **Voltar** saiu.
+- A busca percorre o Compêndio inteiro ou a categoria selecionada. Ao limpar a busca, as pastas abertas reaparecem. A lista carrega os itens em blocos com **Mostrar mais**.
+- É possível adicionar itens pelo **+**, arrastar para a ficha e incluir grupos inteiros de habilidades.
+
 ## 1.0.0 — 06/11/2026
 
 - Criação de personagens desde o estágio 1 para Tagmar XXX e Tagmar 3ER Oficial.

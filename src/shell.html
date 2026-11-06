@@ -1,7 +1,7 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src 'none'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-<title>Tagmar • Ficha de Bolso 1.0</title><style>/* STYLES */</style></head><body>
-<header class="appbar"><div class="brand"><img class="brand-logo" src="__TAGMAR_LOGO__" alt="Tagmar Zero"><small>FICHA DE BOLSO <b>1.0</b></small></div><div class="file-state"><strong id="filename">Sua aventura, sempre com você.</strong><span id="save-state">Editor local • sem conexão com a mesa</span></div><div class="app-actions"><button id="new-actor" hidden>Novo personagem</button><button id="open">Abrir JSON</button><button id="save" class="primary" disabled>Salvar JSON</button><button id="help" aria-label="Ajuda">?</button></div></header>
+<title>Tagmar • Ficha de Bolso 1.1</title><style>/* STYLES */</style></head><body>
+<header class="appbar"><div class="brand"><img class="brand-logo" src="__TAGMAR_LOGO__" alt="Tagmar Zero"><small>FICHA DE BOLSO <b>1.1</b></small></div><div class="file-state"><strong id="filename">Sua aventura, sempre com você.</strong><span id="save-state">Editor local • sem conexão com a mesa</span></div><div class="app-actions"><button id="new-actor" hidden>Novo personagem</button><button id="open">Abrir JSON</button><button id="save" class="primary" disabled>Salvar JSON</button><button id="help" aria-label="Ajuda">?</button></div></header>
 <main id="welcome">
  <section class="hero">
   <div class="hero-intro">
@@ -28,22 +28,17 @@
   </div>
   <section id="catalog-panel" aria-label="Compêndio">
    <div class="creator-heading"><h2>Compêndio</h2>
-    <button class="help-dot" type="button" aria-label="Ajuda sobre o Compêndio" data-tip="Escolha a categoria e abra as pastas da coleção. A busca inclui as subpastas do local atual. Arraste um item para a ficha ou use + para adicionar. Em Habilidades você também pode adicionar grupos inteiros.">?</button>
+    <button class="help-dot" type="button" aria-label="Ajuda sobre o Compêndio" data-tip="Clique em uma categoria ou pasta para abrir e clique de novo para recolher. A busca percorre a categoria selecionada ou o Compêndio inteiro. Arraste um item para a ficha ou use + para adicionar. Em Habilidades você também pode adicionar grupos inteiros.">?</button>
    </div>
    <label for="catalog-search">Buscar item</label>
    <input id="catalog-search" type="search" placeholder="Nome ou coleção…">
    <label for="catalog-type">Categoria</label>
    <select id="catalog-type"></select>
-   <div class="catalog-navigation">
-    <button type="button" id="catalog-back" hidden>‹ Voltar</button>
-    <p id="catalog-path"></p>
-   </div>
    <p id="catalog-count" class="muted" role="status"></p>
-   <button type="button" id="catalog-add-skills" hidden></button>
    <div id="catalog-scroll" role="region" aria-label="Pastas e itens do Compêndio" tabindex="0">
     <ul id="catalog-folders" aria-label="Pastas do Compêndio"></ul>
     <ul id="catalog-results" aria-label="Resultados do Compêndio"></ul>
-    <button type="button" id="catalog-more" hidden>Mostrar mais</button>
+    <button type="button" id="catalog-more" class="catalog-more" data-catalog-more="" hidden>Mostrar mais</button>
    </div>
    <p class="catalog-credit">Projeto Tagmar · CC BY-NC-SA 3.0 BR</p>
   </section>
@@ -54,9 +49,9 @@
   <div id="create-types"></div>
   </section>
  </aside>
- <div class="sheet-wrap"><div class="sheet-caption"><span id="actor-caption"></span><span>EDITOR OFFLINE · 1.0</span></div><section id="sheet" class="tagmar sheet actor tagmar-foundry-sheet"><div class="window-content" id="sheet-body"></div></section></div></main>
+ <div class="sheet-wrap"><div class="sheet-caption"><span id="actor-caption"></span><span>EDITOR OFFLINE · 1.1</span></div><section id="sheet" class="tagmar sheet actor tagmar-foundry-sheet"><div class="window-content" id="sheet-body"></div></section></div></main>
 <main id="print-sheet" aria-label="Ficha de personagem para impressão"></main>
-<footer class="app-footer">Tagmar • Implementação das fichas: Marcos Walker e Vinicius Fernandez. Editor portátil 1.0.</footer>
+<footer class="app-footer">Tagmar • Implementação das fichas: Marcos Walker e Vinicius Fernandez. Editor portátil 1.1.</footer>
 <input id="actor-file" type="file" accept=".json,application/json" hidden><input id="item-file" type="file" accept=".json,application/json" hidden><input id="image-file" type="file" accept="image/png,image/jpeg,image/webp" hidden>
 <dialog id="modal"><header><h2 id="modal-title"></h2><button id="modal-close" aria-label="Fechar janela">×</button></header><div id="modal-body"></div><footer id="modal-actions"></footer></dialog><div id="toast" role="status" aria-live="polite"></div>
 <div id="help-tip" role="tooltip" hidden></div>

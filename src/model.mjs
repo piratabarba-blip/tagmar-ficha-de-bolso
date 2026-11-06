@@ -1,7 +1,7 @@
 import * as rules from '../vendor/rules.mjs';
 import schema from '../vendor/schema.json' with {type:'json'};
 
-export const VERSION='1.0.0';
+export const VERSION='1.1.0';
 export const ATTRS=['INT','AUR','CAR','FOR','FIS','AGI','PER'];
 export const TYPES=schema.Item.types;
 export const clone=value=>structuredClone(value);

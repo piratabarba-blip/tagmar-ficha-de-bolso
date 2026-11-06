@@ -230,9 +230,9 @@ function createCharacter(){
    load(actor,name,null,{created:true});
    applyCalculationMode(calculationMode);
    setItemPanel('catalog');
-   $('#catalog-type').value='01';
+   $('#catalog-type').value='';
    $('#catalog-search').value='';
-   resetCatalogFolder();
+   resetCatalogTree('01');
   }}
  ]);
  $('#character-name').focus();
@@ -550,7 +550,12 @@ const catalogCategories=[
  ['05','Defesa'],['06','Técnicas de Combate'],['07','Magias'],
  ['08','Magias Ancestrais'],['09','Magias Perdidas'],['10','Pertences e Afins']
 ];
-const makeCatalogFolder=name=>({name,children:new Map(),items:[],directItems:[]});
+const catalogNodes=[];
+function makeCatalogFolder(name,category){
+ const folder={id:catalogNodes.length,name,category,children:new Map(),items:[],directItems:[]};
+ catalogNodes.push(folder);
+ return folder;
+}
 const catalogRoot=makeCatalogFolder('Todas as categorias');
 const rootsByCollection=new Map();
 for(const item of CATALOG){
@@ -558,7 +563,7 @@ for(const item of CATALOG){
  if(!rootsByCollection.has(key))rootsByCollection.set(key,new Set());
  rootsByCollection.get(key).add(item.folders[0]);
 }
-for(const [value,label] of catalogCategories)catalogRoot.children.set(value,makeCatalogFolder(`${value} - ${label}`));
+for(const [value,label] of catalogCategories)catalogRoot.children.set(value,makeCatalogFolder(`${value} - ${label}`,value));
 for(const [index,item] of CATALOG.entries()){
  const location=[item.source,...item.folders].join(' › ');
  const entry={item,index,location,key:searchKey(`${item.name} ${itemLabel(item.type)} ${location}`)};
@@ -568,7 +573,7 @@ for(const [index,item] of CATALOG.entries()){
  const roots=rootsByCollection.get(item.category+item.source);
  const names=[item.source,...item.folders.slice(roots.size===1?1:0)];
  for(const name of names){
-  if(!folder.children.has(name))folder.children.set(name,makeCatalogFolder(name));
+  if(!folder.children.has(name))folder.children.set(name,makeCatalogFolder(name,item.category));
   folder=folder.children.get(name);
   folder.items.push(entry);
  }
@@ -578,57 +583,67 @@ const catalogType=$('#catalog-type');
 catalogType.innerHTML='<option value="">Todas as categorias</option>'+catalogCategories
  .map(([value,label])=>`<option value="${value}">${value} - ${label}</option>`).join('');
 const catalogResults=$('#catalog-results');
+const catalogTree=$('#catalog-folders');
+const catalogScroll=$('#catalog-scroll');
 const catalogPageSize=20;
-let catalogMatches=[],catalogLimit=catalogPageSize;
-let catalogPath=[],catalogFolders=[],catalogSkillGroup=[];
-function renderCatalog(){
- const showLocation=Boolean(searchKey($('#catalog-search').value));
- catalogResults.innerHTML=catalogMatches.slice(0,catalogLimit).map(({item,index,location})=>
+let catalogMatches=[];
+function catalogRows(entries,showLocation=false){
+ return entries.map(({item,index,location})=>
   `<li class="catalog-item" draggable="true" data-catalog-index="${index}" title="${e(location)}">
    <div><strong>${e(item.name)}</strong>${showLocation?`<small>${e(location)}</small>`:''}</div>
    <button type="button" aria-label="Adicionar ${e(item.name)}">+</button>
   </li>`).join('');
- $('#catalog-more').hidden=catalogLimit>=catalogMatches.length;
+}
+function catalogBranches(folders){
+ return [...folders].sort((a,b)=>a.name.localeCompare(b.name,'pt-BR',{numeric:true})).map(folder=>
+  `<li><details class="catalog-folder" data-catalog-folder="${folder.id}">
+   <summary><span>${e(folder.name)}</span><small>${folder.items.length}</small></summary>
+   <div class="catalog-branch"></div>
+  </details></li>`).join('');
+}
+function populateCatalogFolder(details){
+ const content=details.lastElementChild;
+ if(content.childElementCount)return;
+ const folder=catalogNodes[Number(details.dataset.catalogFolder)];
+ const skills=folder.category==='03'&&folder.items.length;
+ const skillLabel=folder===catalogRoot.children.get('03')?'Adicionar habilidades comuns':'Adicionar grupo';
+ content.innerHTML=`
+  ${skills?`<button type="button" class="catalog-add-skills" data-catalog-skills="${folder.id}">${skillLabel} (${skills})</button>`:''}
+  ${folder.children.size?`<ul class="catalog-branches">${catalogBranches(folder.children.values())}</ul>`:''}
+  <ul class="catalog-rows">${catalogRows(folder.directItems.slice(0,catalogPageSize))}</ul>
+  ${folder.directItems.length>catalogPageSize?`<button type="button" class="catalog-more" data-catalog-more="${folder.id}">Mostrar mais</button>`:''}`;
 }
 function filterCatalog(){
- const folder=catalogPath.at(-1)??catalogRoot;
- const query=searchKey($('#catalog-search').value);
- const terms=query.split(/\s+/);
- catalogMatches=query?folder.items.filter(({key})=>terms.every(term=>key.includes(term))):folder.directItems;
- catalogFolders=query?[]:[...folder.children.values()].sort((a,b)=>a.name.localeCompare(b.name,'pt-BR',{numeric:true}));
- $('#catalog-path').textContent=catalogPath.map(part=>part.name).join(' › ')||catalogRoot.name;
- $('#catalog-back').hidden=catalogPath.length<=(catalogType.value?1:0);
- $('#catalog-folders').innerHTML=catalogFolders.map((child,index)=>
-  `<li><button type="button" data-folder-index="${index}"><span>${e(child.name)}</span><small>${child.items.length}</small></button></li>`).join('');
- const count=query?catalogMatches.length:folder.items.length;
+ const scope=catalogRoot.children.get(catalogType.value)??catalogRoot;
+ const terms=searchKey($('#catalog-search').value).split(/\s+/).filter(Boolean);
+ const searching=terms.length>0;
+ catalogMatches=searching?scope.items.filter(({key})=>terms.every(term=>key.includes(term))):[];
+ catalogTree.hidden=searching;
+ catalogResults.hidden=!searching;
+ catalogResults.innerHTML=catalogRows(catalogMatches.slice(0,catalogPageSize),true);
+ $('#catalog-more').hidden=catalogMatches.length<=catalogPageSize;
+ const count=searching?catalogMatches.length:scope.items.length;
  $('#catalog-count').textContent=count?`${count.toLocaleString('pt-BR')} itens`:'Nenhum item encontrado.';
- const skills=catalogRoot.children.get('03');
- const inSkills=catalogPath[0]===skills;
- catalogSkillGroup=!query&&inSkills?folder.items:[];
- const bulk=$('#catalog-add-skills');
- bulk.hidden=!catalogSkillGroup.length;
- bulk.textContent=folder===skills?`Adicionar habilidades comuns (${catalogSkillGroup.length})`
-  :`Adicionar grupo (${catalogSkillGroup.length})`;
- catalogLimit=catalogPageSize;
- renderCatalog();
- $('#catalog-scroll').scrollTop=0;
+ catalogScroll.scrollTop=0;
+}
+function resetCatalogTree(openCategory=catalogType.value){
+ const selected=catalogRoot.children.get(catalogType.value);
+ catalogTree.innerHTML=catalogBranches(selected?[selected]:catalogRoot.children.values());
+ const opened=catalogRoot.children.get(openCategory);
+ const details=opened&&catalogTree.querySelector(`[data-catalog-folder="${opened.id}"]`);
+ if(details){
+  populateCatalogFolder(details);
+  details.open=true;
+ }
+ filterCatalog();
  $('.item-creator').scrollTop=0;
 }
-function resetCatalogFolder(){
- catalogPath=catalogType.value?[catalogRoot.children.get(catalogType.value)]:[];
- filterCatalog();
-}
-catalogType.onchange=resetCatalogFolder;
+catalogType.onchange=()=>resetCatalogTree();
 $('#catalog-search').oninput=filterCatalog;
-$('#catalog-more').onclick=()=>{catalogLimit+=catalogPageSize;renderCatalog();};
-$('#catalog-folders').onclick=event=>{
- const button=event.target.closest('[data-folder-index]');
- if(!button)return;
- catalogPath.push(catalogFolders[Number(button.dataset.folderIndex)]);
- filterCatalog();
-};
-$('#catalog-back').onclick=()=>{catalogPath.pop();filterCatalog();};
-resetCatalogFolder();
+catalogTree.addEventListener('toggle',event=>{
+ if(event.target.open)populateCatalogFolder(event.target);
+},true);
+resetCatalogTree();
 
 function catalogItemCopy({type,name,system,imgXXX}){
  const item={...newItem(type,name),system:clone(system)};
@@ -639,10 +654,10 @@ function catalogItemCopy({type,name,system,imgXXX}){
  if(type==='Habilidade'&&Number(item.system.nivel??0)===0)item.system.total=-7;
  return item;
 }
-$('#catalog-add-skills').onclick=()=>{
+function addCatalogSkills(entries){
  const names=new Set(session.actor.items.filter(item=>item.type==='Habilidade').map(item=>searchKey(item.name)));
  const additions=[];
- for(const {item} of catalogSkillGroup){
+ for(const {item} of entries){
   const key=searchKey(item.name);
   if(names.has(key))continue;
   names.add(key);
@@ -654,7 +669,7 @@ $('#catalog-add-skills').onclick=()=>{
   setTab('habilidades');
   toast(`${additions.length} habilidades adicionadas à ficha.`);
  }catch(error){fail(error);}
-};
+}
 
 function addCatalogItem(index){
  const entry=CATALOG[index];
@@ -686,13 +701,25 @@ function addCatalogItem(index){
    [{label:'Cancelar',run:close},{label:'Substituir',primary:true,run:add}]);
  }else add();
 }
-catalogResults.onclick=event=>{
- const row=event.target.closest('button')?.closest('[data-catalog-index]');
- if(!row)return;
- try{addCatalogItem(Number(row.dataset.catalogIndex));}catch(error){fail(error);}
+catalogScroll.onclick=event=>{
+ const button=event.target.closest('button');
+ if(!button)return;
+ if(button.hasAttribute('data-catalog-more')){
+  const folderId=button.dataset.catalogMore;
+  const entries=folderId===''?catalogMatches:catalogNodes[Number(folderId)].directItems;
+  const list=button.previousElementSibling;
+  const start=list.childElementCount;
+  list.insertAdjacentHTML('beforeend',catalogRows(entries.slice(start,start+catalogPageSize),folderId===''));
+  button.hidden=list.childElementCount>=entries.length;
+ }else if(button.hasAttribute('data-catalog-skills')){
+  addCatalogSkills(catalogNodes[Number(button.dataset.catalogSkills)].items);
+ }else{
+  const row=button.closest('[data-catalog-index]');
+  if(row)try{addCatalogItem(Number(row.dataset.catalogIndex));}catch(error){fail(error);}
+ }
 };
 const catalogDragType='application/x-tagmar-ficha-item';
-catalogResults.addEventListener('dragstart',event=>{
+catalogScroll.addEventListener('dragstart',event=>{
  const row=event.target.closest('[data-catalog-index]');
  if(!row)return;
  event.dataTransfer.setData(catalogDragType,row.dataset.catalogIndex);
