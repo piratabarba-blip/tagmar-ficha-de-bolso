@@ -2,22 +2,27 @@
 
 Editor local para criar, consultar e editar personagens do Tagmar fora do Foundry. Comece no estágio 1 ou abra uma ficha exportada. Ao terminar, baixe o JSON para levar à mesa.
 
-Abra o editor no navegador e monte ou consulte seu personagem mesmo com o Foundry do mestre fechado. O programa funciona offline e os arquivos ficam no seu computador.
+Abra o editor no navegador ou na versão portátil para Windows. Você pode montar ou consultar seu personagem com o Foundry do mestre fechado. O editor funciona offline e os arquivos ficam no seu computador.
 
-**[Baixar somente o editor HTML](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.0.0/Ficha.de.Bolso.html)** · **[Baixar o pacote 1.0.0](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.0.0/tagmar-ficha-de-bolso-1.0.0.zip)** · [Versões e novidades](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases)
+**[Baixar o portátil para Windows (.exe)](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.0.0/Tagmar-Ficha-de-Bolso.exe)** · **[Baixar o editor HTML](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.0.0/Ficha.de.Bolso.html)** · [Baixar o pacote ZIP](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.0.0/tagmar-ficha-de-bolso-1.0.0.zip)
 
-![Tela inicial da Ficha de Bolso](docs/inicio.png)
+![Ficha de exemplo com as abas no estilo do Foundry e o Compêndio de armas aberto na lateral direita](docs/ficha-compendio.png)
 
 ## Começar
 
-1. Extraia o ZIP em uma pasta.
-2. Abra **Ficha de Bolso.html** no Chrome ou Edge. Se o Windows abrir um editor de texto, use **Abrir com → navegador**.
-3. Clique em **Criar personagem**, escolha o sistema e o modo da mesa. Use o Compêndio para adicionar a raça, a profissão e os demais itens.
-4. Para editar uma ficha existente, clique em **Abrir minha ficha JSON** ou arraste o arquivo para a janela. **Experimentar um personagem** abre uma ficha fictícia.
+- **Portátil para Windows 64 bits.** Abra o `.exe` para usar a ficha em uma janela própria, sem instalador. O programa usa o Microsoft Edge WebView2 Runtime. O executável está sem assinatura digital, então o Edge ou o Windows pode exibir um aviso do SmartScreen. [Sobre o WebView2 Runtime](https://learn.microsoft.com/pt-br/microsoft-edge/webview2/concepts/distribution)
+- **Editor HTML.** Baixe o arquivo avulso ou extraia o ZIP e abra **Ficha de Bolso.html** no Chrome ou no Edge. O HTML contém o editor completo e pode ser copiado sozinho. Se o Windows abrir um editor de texto, use **Abrir com → navegador**.
 
-O HTML contém tudo que precisa para funcionar. É possível copiar somente esse arquivo para outro computador. Os outros arquivos do pacote são documentação, exemplo, fontes e testes.
+Clique em **Criar personagem**, escolha o sistema e o modo da mesa. Use o Compêndio para adicionar a raça, a profissão e os demais itens.
 
-Se baixou somente o HTML, basta abri-lo no navegador. A página de código do GitHub não executa o editor: use um dos links de download acima.
+Para editar uma ficha existente, clique em **Abrir minha ficha JSON** ou arraste o arquivo para a janela. **Experimentar um personagem** abre uma ficha fictícia.
+
+<details>
+<summary>Ver a tela inicial</summary>
+
+![Tela inicial da Ficha de Bolso](docs/inicio.png)
+
+</details>
 
 ## Levar a ficha do Foundry para o editor
 
@@ -77,7 +82,7 @@ Abra a ficha e clique em **Imprimir ficha** no menu esquerdo. Escolha **Fundo br
 
 ## Rascunho e imagens
 
-O editor tenta guardar um único rascunho no armazenamento local do navegador. Na próxima abertura, use **Recuperar rascunho**. Isso depende do navegador, do espaço disponível e do caminho do HTML; limpar os dados do navegador pode apagar o rascunho. **Salvar JSON** é a forma de guardar e transportar sua ficha.
+O editor tenta guardar um único rascunho no armazenamento local. Na próxima abertura, use **Recuperar rascunho**. No HTML, o rascunho depende do navegador e do caminho do arquivo. No portátil, ele fica no perfil local do programa. **Salvar JSON** é a forma de guardar sua ficha e levá-la para outra instalação.
 
 Imagens que estão no servidor Foundry não são carregadas pela rede. O caminho original permanece no JSON. **Retrato local** permite selecionar uma imagem para visualizar nesta sessão, sem substituir o caminho usado na mesa.
 
@@ -98,6 +103,8 @@ Testes automatizados de cálculos, progressão, efeitos Tagmar, desfazer/refazer
 A reimportação de uma ficha criada no editor foi conferida em uma mesa do Tagmar XXX no Foundry 14.370, incluindo os itens e seus ícones. A impressão em A4 foi conferida nos dois temas, com tabelas que continuam nas páginas seguintes. Para personagens em uso, confira a importação em uma cópia.
 
 ## Código-fonte e reprodução
+
+O código-fonte do executável e as instruções de compilação estão no [pacote fonte do portátil](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.0.0/Tagmar-Ficha-de-Bolso-Fonte-Portatil.zip).
 
 Base de desenvolvimento: Tagmar XXX `2.7.0-v14.1-rc.52`, para Foundry V14. As funções de cálculo e o esquema foram comparados com a cópia local do Tagmar 3ER Oficial e não apresentaram diferenças. Os hashes dos arquivos de origem estão em `vendor/provenance.json`.
 
