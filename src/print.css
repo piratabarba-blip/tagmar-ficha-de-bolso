@@ -1,0 +1,110 @@
+#print-sheet { display:none; }
+
+@media print {
+ @page {
+  size:A4 portrait;
+  margin:9mm 10mm 13mm;
+  @bottom-left { content:"TAGMAR  /  FICHA DE BOLSO"; font:7pt Arial,sans-serif; color:#444; }
+  @bottom-right { content:counter(page) " / " counter(pages); font:8pt Arial,sans-serif; color:#444; }
+ }
+ @page ficha-escura {
+  background:#18151e;
+  @bottom-left { color:#e0d7e5; }
+  @bottom-right { color:#e0d7e5; }
+ }
+
+ :root {
+  color-scheme:light;
+  --print-paper:#fff;
+  --print-text:#181818;
+  --print-muted:#333;
+  --print-heading:#181818;
+  --print-strong-line:#222;
+  --print-line:#888;
+  --print-soft-line:#ccc;
+  --print-table-head:#f1f1f1;
+  --print-logo-filter:grayscale(1) brightness(.56);
+ }
+ :root[data-print-theme="dark"]:has(#print-sheet:not(:empty)) {
+  --print-paper:#18151e;
+  --print-text:#faf5fc;
+  --print-muted:#e0d7e5;
+  --print-heading:#f7dc99;
+  --print-strong-line:#ac9bb6;
+  --print-line:#83758c;
+  --print-soft-line:#71637b;
+  --print-table-head:#342b3e;
+  --print-logo-filter:none;
+  print-color-adjust:exact;
+ }
+ body { margin:0; background:var(--print-paper); color:var(--print-text); }
+ body:has(#print-sheet:not(:empty)) > :not(#print-sheet) { display:none!important; }
+ #print-sheet:not(:empty) {
+  display:block;
+  font:9pt/1.25 Arial,sans-serif;
+  overflow-wrap:anywhere;
+  print-color-adjust:exact;
+ }
+ [data-print-theme="dark"] #print-sheet:not(:empty) { page:ficha-escura; }
+
+ .print-header {
+  display:flex; gap:3mm; align-items:center; padding:2.2mm 2.5mm; margin-bottom:2.5mm;
+  border:3px double var(--print-strong-line); break-inside:avoid; break-after:avoid;
+ }
+ .print-header > div { flex:1; }
+ .print-header p { margin:0 0 .6mm; font-size:7.5pt; letter-spacing:.07em; text-transform:uppercase; }
+ .print-header h1 { margin:0; font:bold 21pt/1.05 Georgia,serif; }
+ .print-header strong { padding:1mm 2mm; border:1px solid var(--print-line); font-size:9pt; white-space:nowrap; }
+ .print-logo { width:27mm; max-height:12mm; object-fit:contain; filter:var(--print-logo-filter); }
+ .print-portrait { width:12mm; height:12mm; object-fit:contain; }
+
+ .print-section { margin-bottom:2mm; }
+ .print-section > h2 {
+  margin:0 0 1mm; border-top:1px solid var(--print-strong-line); border-bottom:1px solid var(--print-line); padding:1mm 1.5mm;
+  color:var(--print-heading);
+  font:bold 11pt/1 Georgia,serif; letter-spacing:.045em; text-transform:uppercase;
+  break-after:avoid;
+ }
+ .print-overview { display:grid; grid-template-columns:43% 1fr; gap:2mm; align-items:start; break-inside:avoid; }
+ .print-fields { display:grid; grid-template-columns:1fr 1fr; gap:0; margin:0 0 1mm; border:1px solid var(--print-line); }
+ .print-fields > div { min-width:0; padding:.55mm 1mm; border-bottom:1px solid var(--print-soft-line); }
+ .print-fields dt { font-size:7pt; color:var(--print-muted); }
+ .print-fields dd { margin:0; font-weight:bold; }
+ .print-fields.print-inline-fields {
+  display:flex; flex-wrap:wrap; align-items:baseline; margin-bottom:1mm; break-inside:avoid; break-after:avoid;
+ }
+ .print-inline-fields > div { flex:1 1 auto; border-bottom:0; border-right:1px solid var(--print-soft-line); }
+ .print-inline-fields > div:last-child { border-right:0; }
+
+ .print-table { width:100%; table-layout:fixed; border-collapse:collapse; margin:0 0 1.1mm; }
+ .print-table-short { break-inside:avoid; }
+ .print-table thead { display:table-header-group; break-inside:avoid; break-after:avoid; }
+ .print-table tr { break-inside:avoid; }
+ .print-table th,.print-table td { border:1px solid var(--print-line); padding:.4mm 1mm; vertical-align:top; text-align:center; }
+ .print-table th { font-weight:600; }
+ .print-table th[scope="row"],.print-table thead th:first-child,.print-table .print-empty { text-align:left; }
+ .print-table th[scope="row"] { font-weight:400; }
+ .print-table thead th { background:var(--print-table-head); }
+ .print-table col:first-child { width:48%; }
+ .print-table th.print-table-title { text-align:left; font-family:Georgia,serif; }
+ .print-attributes { font-size:8pt; }
+ .print-attributes col:first-child { width:34%; }
+ .print-attributes th,.print-attributes td,.print-weapon-groups th,.print-weapon-groups td { padding:.48mm .55mm; }
+ .print-skills { font-size:8.25pt; }
+ .print-skills col:nth-child(1) { width:22%; }
+ .print-skills col:nth-child(n+2) { width:5.66%; }
+ .print-skills thead th[scope="colgroup"] { font:bold 9pt Georgia,serif; text-align:center; }
+ .print-skills th:not([scope="row"]),.print-skills td { padding-inline:.5mm; }
+ .print-weapon-groups { font-size:7.75pt; }
+ .print-weapon-groups col:first-child { width:15%; }
+ .print-attacks col:first-child { width:27%; }
+ .print-attacks col:nth-child(2),.print-attacks col:nth-child(3) { width:10%; }
+ .print-techniques col:first-child,.print-spells col:first-child { width:35%; }
+ .print-techniques col:last-child { width:25%; }
+ .print-spells col:nth-last-child(-n+2) { width:19%; }
+ .print-biography { padding:.5mm 1.5mm; border-left:1px solid var(--print-line); white-space:pre-wrap; }
+ .print-biography p { margin:0 0 1.5mm; orphans:3; widows:3; }
+ .print-biography h1,.print-biography h2,.print-biography h3 { font-size:11pt; margin:1.5mm 0 1mm; break-after:avoid; }
+ .print-biography table { border-collapse:collapse; max-width:100%; }
+ .print-biography td,.print-biography th { border:1px solid var(--print-line); padding:.5mm 1mm; }
+}

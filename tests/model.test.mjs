@@ -14,12 +14,40 @@ test('cálculos por pontos: totais, itens, carga e pontos de estágio; não alte
 test('sorteio usa tabela original de ajustes e é idempotente',()=>{
  const a=sampleActor();a.system.carac_sort.FOR=18;a.system.carac_sort.FIS=15;const b=recalculate(a,'sorteio');assert.equal(b.system.atributos.FOR,3);assert.equal(b.system.atributos.FIS,1);assert.equal(b.system.ef.max,20);assert.deepEqual(recalculate(b,'sorteio'),b);
 });
+test('reaplica os modificadores da raça mesmo quando o nome já coincide',()=>{
+ const actor=sampleActor();
+ const race=actor.items.find(item=>item.type==='Raca');
+ Object.assign(race.system.mod_racial,{FIS:2,AGI:-1});
+ for(const mode of ['pontos','sorteio']){
+  const result=recalculate(actor,mode);
+  assert.equal(result.system.raca,race.name);
+  assert.equal(result.system.mod_racial.FIS,2);
+  assert.equal(result.system.mod_racial.AGI,-1);
+  assert.deepEqual(recalculate(result,mode),result);
+ }
+ assert.equal(recalculate(actor,'preserve').system.mod_racial.FIS,0);
+});
 test('efeito Tagmar temporário de FIS não acumula e preserva EH gasta',()=>{
  const a=sampleActor(),effect=newItem('Efeito','Vigor');effect.system={atributo:'FIS',tipo:'+',valor:2,ativo:true};a.items.push(effect);const b=recalculate(a,'pontos');assert.equal(b.system.eh.max,30);assert.equal(b.system.eh.value,24);assert.deepEqual(recalculate(b,'pontos'),b);b.items.at(-1).system.ativo=false;const c=recalculate(b,'pontos');assert.equal(c.system.eh.max,24);assert.equal(c.system.eh.value,18);
 });
 test('progressão usa experiência, faixa d10, FIS e conserva EH gasta',()=>{
  const a=sampleActor();const b=levelUp(a,'pontos',7);assert.equal(b.system.estagio,4);assert.equal(b.system.eh.max,31);assert.equal(b.system.eh.value,18);assert.equal(b.system.pontos_estagio.next,46);assert.equal(a.system.estagio,3);
  assert.throws(()=>levelUp(b,'pontos',7),/Experiência/);assert.throws(()=>levelUp(a,'preserve',7),/Escolha/);assert.throws(()=>levelUp(a,'pontos',11),/d10/);
+});
+test('calcula com números em texto e campos vazios de fichas exportadas do Foundry',()=>{
+ const actor=sampleActor();
+ const technique=newItem('Tecnica_Combate','Combate Montado');
+ Object.assign(technique.system,{nivel:2,bonus:null,mecanica:'1',ajuste:{atributo:'AGI',valor:'-1'}});
+ actor.items.push(technique);
+ actor.system.pontos_estagio.value=50;
+ const result=levelUp(actor,'pontos',7);
+ const saved=result.items.at(-1).system;
+ assert.equal(result.system.estagio,4);
+ assert.equal(saved.fa,2);
+ assert.equal(saved.bonus,null);
+ assert.equal(saved.mecanica,'1');
+ assert.equal(saved.ajuste.valor,'-1');
+ assert.deepEqual(recalculate(result,'pontos'),result);
 });
 test('erro de cálculo ou raças duplicadas não muta a ficha nem remove itens',()=>{
  const a=sampleActor();a.items.push(newItem('Raca','Outra raça'));const original=serialize(a);assert.throws(()=>recalculate(a,'pontos'),/mais de uma/);assert.equal(serialize(a),original);

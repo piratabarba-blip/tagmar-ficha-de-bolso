@@ -1,6 +1,6 @@
 {
   "name": "tagmar-ficha-de-bolso",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Editor offline de personagens Tagmar exportados em JSON",
   "scripts": {

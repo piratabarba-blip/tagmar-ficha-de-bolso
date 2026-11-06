@@ -12,17 +12,15 @@ export function _preparaCaracRaciais(sheetData, updatePers) {
     const racaP = racas[0];
     if (racaP) {
         const racaData = racaP.system;
-        if (actorData.system.raca != racaP.name)
-        {
+        if (actorData.system.raca != racaP.name) {
             updatePers['system.raca'] = racaP.name;
-            updatePers['system.mod_racial.INT'] = racaData.mod_racial.INT;
-            updatePers['system.mod_racial.AUR'] = racaData.mod_racial.AUR;
-            updatePers['system.mod_racial.CAR'] = racaData.mod_racial.CAR;
-            updatePers['system.mod_racial.FOR'] = racaData.mod_racial.FOR;
-            updatePers['system.mod_racial.FIS'] = racaData.mod_racial.FIS;
-            updatePers['system.mod_racial.AGI'] = racaData.mod_racial.AGI;
-            updatePers['system.mod_racial.PER'] = racaData.mod_racial.PER;
-        } 
+        }
+        for (const atributo of ATRIBUTOS_BASICOS) {
+            const modificador = racaData.mod_racial[atributo];
+            if (actorData.system.mod_racial[atributo] !== modificador) {
+                updatePers['system.mod_racial.' + atributo] = modificador;
+            }
+        }
     }
 }
 

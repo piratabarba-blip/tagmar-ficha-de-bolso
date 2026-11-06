@@ -1,5 +1,15 @@
 # Histórico de versões
 
+## 1.0.0 — 06/11/2026
+
+- Criação de personagens desde o estágio 1 para Tagmar XXX e Tagmar 3ER Oficial.
+- Compêndio offline com 2.369 entradas de Criação de Fichas e Terras Selvagens, organizado por categoria e coleção. Adição por arrastar ou pelo botão `+`, com inclusão em grupo de habilidades.
+- Edição visual da biografia e das descrições. Painel de criação de itens e consulta dos itens da ficha por categoria.
+- Recálculo automático nos modos por pontos e por sorteio, controles de nível nas listas e progressão de estágio junto ao XP.
+- Exportação em JSON para o Foundry, com referências aos ícones do compêndio nas fichas do XXX.
+- Impressão e exportação em PDF A4 com fundo branco ou escuro, tabelas paginadas e seções na ordem da ficha.
+- Nova tela inicial com Landalfo, personagem fictício para experimentar e ajuda nos controles.
+
 ## 0.1.0 — 26/10/2026
 
 Primeira prévia pública do Tagmar Ficha de Bolso.

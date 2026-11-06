@@ -1,10 +1,61 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src 'none'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-<title>Tagmar • Ficha de Bolso 0.1</title><style>/* STYLES */</style></head><body>
-<header class="appbar"><div class="brand"><span class="brand-mark">T</span><div><strong>TAGMAR</strong><small>FICHA DE BOLSO <b>0.1</b></small></div></div><div class="file-state"><strong id="filename">Sua aventura, sempre com você.</strong><span id="save-state">Editor local • sem conexão com a mesa</span></div><div class="app-actions"><button id="open">Abrir JSON</button><button id="save" class="primary" disabled>Salvar JSON</button><button id="help" aria-label="Ajuda">?</button></div></header>
-<main id="welcome"><section class="hero"><span class="eyebrow">SEU PERSONAGEM, FORA DA MESA</span><h1>A aventura continua<br>na sua ficha.</h1><p>Abra a ficha exportada do Foundry, organize os pertences e prepare o próximo estágio. Tudo fica no seu computador.</p><div class="hero-actions"><button class="primary" id="welcome-open">Abrir minha ficha JSON</button><button id="example">Experimentar um personagem</button></div><div id="recovery"></div><div class="steps"><article><b>01</b><h3>Exporte no Foundry</h3><p>Na lista de Atores, clique com o botão direito no personagem e escolha Exportar dados.</p></article><article><b>02</b><h3>Edite aqui</h3><p>Use as abas da ficha, os itens e os controles de progressão. Não precisa deixar a mesa aberta.</p></article><article><b>03</b><h3>Leve de volta</h3><p>Salve um novo JSON e importe em uma cópia da ficha no Foundry para conferir com o mestre.</p></article></div><p class="muted">Tagmar XXX e Tagmar 3ER Oficial • Personagens • Foundry V14<br>Prévia 0.1: fichas por pontos e sorteio, com os templates do sistema.</p></section></main>
-<main id="workspace" hidden><aside class="tools"><section><span class="eyebrow">MESA DE TRABALHO</span><h2>Minha ficha</h2><label for="mode">Cálculos <button class="help-dot" data-tip="O JSON não registra todas as opções do mundo. Escolha o mesmo modo usado na sua mesa. Preservar valores permite editar sem recalcular. Os efeitos de módulos do Foundry não são executados aqui." type="button">?</button></label><select id="mode"><option value="preserve">Preservar valores</option><option value="pontos">Por pontos</option><option value="sorteio">Por sorteio</option></select><button id="recalculate">Recalcular ficha</button><button id="level" class="accent">Avançar estágio ↗</button></section><section><div class="two"><button id="undo">↶ Desfazer</button><button id="redo">↷ Refazer</button></div><button id="review">Conferir alterações</button><button id="inventory">Todos os itens</button><button id="import-item">Importar item JSON</button><button id="new-item">Criar item</button></section><section><button id="advanced">Dados avançados</button><button id="portrait">Retrato local</button><button id="print">Imprimir ficha</button><p class="muted">Retratos do servidor podem não estar disponíveis offline. O caminho original é preservado no JSON.</p></section><section><span class="eyebrow">CONFERÊNCIA</span><div id="warnings"></div><p class="muted" id="draft-state">Salve um JSON para levar a ficha com você.</p></section></aside><div class="sheet-wrap"><div class="sheet-caption"><span id="actor-caption"></span><span>EDITOR OFFLINE · 0.1</span></div><section id="sheet" class="tagmar sheet actor tagmar-foundry-sheet"><div class="window-content" id="sheet-body"></div></section></div></main>
-<footer class="app-footer">Tagmar • Implementação das fichas: Marcos Walker e Vinicius Fernandez. Editor portátil experimental 0.1.</footer>
+<title>Tagmar • Ficha de Bolso 1.0</title><style>/* STYLES */</style></head><body>
+<header class="appbar"><div class="brand"><img class="brand-logo" src="__TAGMAR_LOGO__" alt="Tagmar Zero"><small>FICHA DE BOLSO <b>1.0</b></small></div><div class="file-state"><strong id="filename">Sua aventura, sempre com você.</strong><span id="save-state">Editor local • sem conexão com a mesa</span></div><div class="app-actions"><button id="new-actor" hidden>Novo personagem</button><button id="open">Abrir JSON</button><button id="save" class="primary" disabled>Salvar JSON</button><button id="help" aria-label="Ajuda">?</button></div></header>
+<main id="welcome">
+ <section class="hero">
+  <div class="hero-intro">
+   <div class="hero-copy">
+    <span class="eyebrow">SEU PERSONAGEM, FORA DA MESA</span>
+    <h1>A aventura continua<br>na sua ficha.</h1>
+    <p>Crie um personagem com os itens do Compêndio ou abra sua ficha exportada do Foundry. Tudo fica no seu computador.</p>
+    <div class="hero-actions"><button class="primary" id="new-character">Criar personagem</button><button id="welcome-open">Abrir minha ficha JSON</button><button id="example">Experimentar um personagem</button></div>
+    <div id="recovery"></div>
+   </div>
+   <div class="hero-art">
+    <img src="__TAGMAR_LANDALFO__" width="640" height="960" alt="Landalfo, mago élfico com um cajado e uma fênix bordada no manto">
+   </div>
+  </div>
+  <div class="steps"><article><b>01</b><h3>Exporte no Foundry</h3><p>Na lista de Atores, clique com o botão direito no personagem e escolha Exportar dados.</p></article><article><b>02</b><h3>Edite aqui</h3><p>Use as abas da ficha, os itens e os controles de progressão. Não precisa deixar a mesa aberta.</p></article><article><b>03</b><h3>Leve de volta</h3><p>Salve um novo JSON e importe em uma cópia da ficha no Foundry para conferir com o mestre.</p></article></div>
+  <p class="muted">Tagmar XXX e Tagmar 3ER Oficial • Personagens • Foundry V14<br>Fichas por pontos e sorteio, com os templates do sistema.</p>
+ </section>
+</main>
+<main id="workspace" hidden><aside class="tools"><section><span class="eyebrow">MESA DE TRABALHO</span><h2>Minha ficha</h2><div class="control-help"><label for="mode">Cálculos</label><button class="help-dot" type="button" aria-label="Ajuda sobre modos de cálculo" data-tip="Em Por pontos ou Por sorteio, os totais são recalculados ao escolher o modo e ao confirmar uma edição. Use Preservar valores para ajustes manuais.">?</button></div><select id="mode"><option value="preserve">Preservar valores</option><option value="pontos">Por pontos</option><option value="sorteio">Por sorteio</option></select><p id="calculation-status" class="notice" role="status"></p></section><section><div class="two"><button id="undo">↶ Desfazer</button><button id="redo">↷ Refazer</button></div><div class="control-help"><button id="review">Conferir alterações</button><button class="help-dot" type="button" aria-label="Ajuda sobre conferir alterações" data-tip="Compara a ficha atual com o JSON aberto. Você pode conferir cada mudança e baixar um relatório.">?</button></div><div class="control-help"><button id="inventory">Todos os itens</button><button class="help-dot" type="button" aria-label="Ajuda sobre todos os itens" data-tip="Abre os itens agrupados por categoria. Busque pelo nome ou pelo tipo e clique num item para abrir a ficha dele.">?</button></div><div class="control-help"><button id="import-item">Importar item JSON</button><button class="help-dot" type="button" aria-label="Ajuda sobre importar itens" data-tip="Abre um item Tagmar exportado do Foundry. Revise os campos e salve para adicionar uma cópia à ficha.">?</button></div></section><section><div class="control-help"><button id="advanced">Dados avançados</button><button class="help-dot" type="button" aria-label="Ajuda sobre dados avançados" data-tip="Abre o JSON completo para edição direta. Use para campos que não aparecem nas abas da ficha.">?</button></div><div class="control-help"><button id="portrait">Retrato local</button><button class="help-dot" type="button" aria-label="Ajuda sobre retrato local" data-tip="Escolhe uma imagem para esta sessão. O caminho do retrato do Foundry é preservado no JSON.">?</button></div><div class="control-help"><button id="print">Imprimir ficha</button><button class="help-dot" type="button" aria-label="Ajuda sobre imprimir a ficha" data-tip="Abre a janela de impressão do navegador. Nela você pode escolher a impressora ou salvar em PDF.">?</button></div><p class="muted">Retratos do servidor podem não estar disponíveis offline. O caminho original é preservado no JSON.</p></section><section><span class="eyebrow">CONFERÊNCIA</span><div id="warnings"></div><p class="muted" id="draft-state">Salve um JSON para levar a ficha com você.</p></section></aside>
+ <aside class="item-creator" aria-label="Compêndio e criação de itens">
+  <div class="item-panel-tabs" role="group" aria-label="Ferramentas de itens">
+   <button type="button" class="item-panel-tab" data-panel="catalog" aria-controls="catalog-panel" aria-pressed="true">Compêndio</button>
+   <button type="button" class="item-panel-tab" data-panel="manual" aria-controls="manual-panel" aria-pressed="false">Criar item</button>
+  </div>
+  <section id="catalog-panel" aria-label="Compêndio">
+   <div class="creator-heading"><h2>Compêndio</h2>
+    <button class="help-dot" type="button" aria-label="Ajuda sobre o Compêndio" data-tip="Escolha a categoria e abra as pastas da coleção. A busca inclui as subpastas do local atual. Arraste um item para a ficha ou use + para adicionar. Em Habilidades você também pode adicionar grupos inteiros.">?</button>
+   </div>
+   <label for="catalog-search">Buscar item</label>
+   <input id="catalog-search" type="search" placeholder="Nome ou coleção…">
+   <label for="catalog-type">Categoria</label>
+   <select id="catalog-type"></select>
+   <div class="catalog-navigation">
+    <button type="button" id="catalog-back" hidden>‹ Voltar</button>
+    <p id="catalog-path"></p>
+   </div>
+   <p id="catalog-count" class="muted" role="status"></p>
+   <button type="button" id="catalog-add-skills" hidden></button>
+   <ul id="catalog-folders" aria-label="Pastas do Compêndio"></ul>
+   <ul id="catalog-results" aria-label="Resultados do Compêndio"></ul>
+   <button type="button" id="catalog-more" hidden>Mostrar mais</button>
+   <p class="catalog-credit">Projeto Tagmar · CC BY-NC-SA 3.0 BR</p>
+  </section>
+  <section id="manual-panel" aria-labelledby="create-title" hidden>
+  <div class="creator-heading"><h2 id="create-title">Criar item</h2>
+   <button class="help-dot" type="button" aria-label="Ajuda sobre criar itens" data-tip="Escolha um tipo para abrir o formulário. Ao salvar, o item entra na aba correspondente da ficha.">?</button>
+  </div>
+  <div id="create-types"></div>
+  </section>
+ </aside>
+ <div class="sheet-wrap"><div class="sheet-caption"><span id="actor-caption"></span><span>EDITOR OFFLINE · 1.0</span></div><section id="sheet" class="tagmar sheet actor tagmar-foundry-sheet"><div class="window-content" id="sheet-body"></div></section></div></main>
+<main id="print-sheet" aria-label="Ficha de personagem para impressão"></main>
+<footer class="app-footer">Tagmar • Implementação das fichas: Marcos Walker e Vinicius Fernandez. Editor portátil 1.0.</footer>
 <input id="actor-file" type="file" accept=".json,application/json" hidden><input id="item-file" type="file" accept=".json,application/json" hidden><input id="image-file" type="file" accept="image/png,image/jpeg,image/webp" hidden>
 <dialog id="modal"><header><h2 id="modal-title"></h2><button id="modal-close" aria-label="Fechar janela">×</button></header><div id="modal-body"></div><footer id="modal-actions"></footer></dialog><div id="toast" role="status" aria-live="polite"></div>
+<div id="help-tip" role="tooltip" hidden></div>
 <script>/* SCRIPT */</script></body></html>

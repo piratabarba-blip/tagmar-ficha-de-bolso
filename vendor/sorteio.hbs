@@ -334,7 +334,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <table>
-                                    <caption class="mediaeval">Pontos de Experiência</caption>
+                                    <caption class="mediaeval">Pontos de Experiência <button type="button" class="help-dot" aria-label="Ajuda sobre experiência" data-tip="Informe o XP total do personagem em Atual. Ao atingir o valor de Próximo Estágio, confirme a edição com Enter ou saia do campo para liberar Subir Nível.">?</button></caption>
                                     <tr style="text-align: center;">
                                         <th class="mediaeval" width="120px">Atual</th>
                                         <td><input title="Pontos de EXP atual." name="system.pontos_estagio.value" type="number" value="{{data.system.pontos_estagio.value}}" /></td>
@@ -346,14 +346,12 @@
                                 </table>
                             </div>
                             <div class="col-md-2">
-                                {{#ifge data.system.pontos_estagio.value data.system.pontos_estagio.next}}
-                                    <table class='table_novaEH'>
-                                        <caption class="mediaeval">Subir Nível</caption>
-                                        <tr style="text-align: center;height:66px;">
-                                            <th class="mediaeval"><a class="subir_estagio" title="Subir Estágio"><i class="fas fa-arrow-up fa-2x"></i></a></th>
-                                        </tr>
-                                    </table>
-                                {{/ifge}}
+                                {{#if canAdvance}}
+                                    <div class="control-help">
+                                        <button type="button" class="subir_estagio accent mediaeval">Subir Nível</button>
+                                        <button type="button" class="help-dot" aria-label="Ajuda sobre subir de nível" data-tip="Rola um d10, consulta a tabela de EH da profissão e soma o Físico para calcular o ganho de EH máxima. Também atualiza o estágio e os pontos disponíveis.">?</button>
+                                    </div>
+                                {{/if}}
                             </div>
                             <div class="col-md-3">
                                 <table>
@@ -507,7 +505,7 @@
                         </select>
                     </div>
                     <div class="col-md-4 col-12">
-                        <label class="mediaeval" style="text-align: right;">Máximo de Habilidades: {{ numHab document.items }}/{{data.system.max_hab}}</label>
+                        <label class="mediaeval" style="text-align: right;">Máximo de Habilidades: {{ numHab document }}/{{data.system.max_hab}}</label>
                     </div>
                 </div>
                 <div class="row dados">
@@ -536,14 +534,12 @@
                             </tr>
                             {{#each actor.h_prof as |h_prof|}}      <!--Habilidades Profissionais-->
                             <tr class="item" data-item-id="{{h_prof.id}}">
-                                <td class="mediaeval habName" style="min-width:140px;"><a class="rollable mediaeval dragable" data-item-id="{{h_prof.id}}" title="Rolar Habilidade">{{h_prof.name}}</a></td>
+                                <td class="mediaeval habName"><a class="rollable mediaeval dragable" data-item-id="{{h_prof.id}}" title="Rolar Habilidade">{{h_prof.name}}</a></td>
                                 <td class="mediaeval habTotal">{{#if h_prof.system.nao_rolar_sem_nivel}}{{#ifle h_prof.system.nivel 0}}<i class="fa-solid fa-ban"></i>{{/ifle}}{{#ifgr h_prof.system.nivel 0}}{{h_prof.system.total}}{{/ifgr}}{{else}}{{h_prof.system.total}}{{/if}}</td>
                                 <td class="mediaeval habNivel esconde">{{h_prof.system.nivel}}</td>
                                 <td style="text-align: right;">
                                     <div class="item-controls">
-                                        {{#iflw h_prof.system.nivel actor.system.estagio}}
-                                            <a class="item-control item-upp" title="Comprar 1 Nível"><i class="fas fa-plus-circle"></i></a>
-                                        {{/iflw}}
+                                        {{itemLevelControls h_prof @root.actor}}
                                         <a class="item-control item-edit" title="Editar"><i class="fas fa-edit"></i></a>
                                         <a class="item-control item-delete" title="Deletar"><i class="fas fa-trash"></i></a>
                                     </div>
@@ -561,14 +557,12 @@
                             </tr>
                             {{#each actor.h_man as |h_man|}}        <!--Habilidades Manuais-->
                             <tr class="item" data-item-id="{{h_man.id}}">
-                                <td class="mediaeval habName" style="min-width:140px;"><a class="rollable mediaeval dragable" data-roll="{{h_man.total}}" data-item-id="{{h_man.id}}" title="Rolar Habilidade">{{h_man.name}}</a></td>
+                                <td class="mediaeval habName"><a class="rollable mediaeval dragable" data-roll="{{h_man.total}}" data-item-id="{{h_man.id}}" title="Rolar Habilidade">{{h_man.name}}</a></td>
                                 <td class="mediaeval habTotal">{{#if h_man.system.nao_rolar_sem_nivel}}{{#ifle h_man.system.nivel 0}}<i class="fa-solid fa-ban"></i>{{/ifle}}{{#ifgr h_man.system.nivel 0}}{{h_man.system.total}}{{/ifgr}}{{else}}{{h_man.system.total}}{{/if}}</td>
                                 <td class="mediaeval habNivel esconde">{{h_man.system.nivel}}</td>
                                 <td style="text-align: right;">
                                     <div class="item-controls">
-                                        {{#iflw h_man.system.nivel actor.system.estagio}}
-                                            <a class="item-control item-upp" title="Comprar 1 Nível"><i class="fas fa-plus-circle"></i></a>
-                                        {{/iflw}}
+                                        {{itemLevelControls h_man @root.actor}}
                                         <a class="item-control item-edit" title="Editar"><i class="fas fa-edit"></i></a>
                                         <a class="item-control item-delete" title="Deletar"><i class="fas fa-trash"></i></a>
                                     </div>
@@ -586,14 +580,12 @@
                             </tr>
                             {{#each actor.h_con as |h_con|}}        <!--Habilidades de Conhecimento-->
                             <tr class="item" data-item-id="{{h_con.id}}">
-                                <td class="mediaeval habName" style="min-width:140px;"><a class="rollable mediaeval dragable" data-item-id="{{h_con.id}}" title="Rolar Habilidade">{{h_con.name}}</a></td>
+                                <td class="mediaeval habName"><a class="rollable mediaeval dragable" data-item-id="{{h_con.id}}" title="Rolar Habilidade">{{h_con.name}}</a></td>
                                 <td class="mediaeval habTotal">{{#if h_con.system.nao_rolar_sem_nivel}}{{#ifle h_con.system.nivel 0}}<i class="fa-solid fa-ban"></i>{{/ifle}}{{#ifgr h_con.system.nivel 0}}{{h_con.system.total}}{{/ifgr}}{{else}}{{h_con.system.total}}{{/if}}</td>
                                 <td class="mediaeval habNivel esconde">{{h_con.system.nivel}}</td>
                                 <td style="text-align: right;">
                                     <div class="item-controls">
-                                        {{#iflw h_con.system.nivel actor.system.estagio}}
-                                            <a class="item-control item-upp" title="Comprar 1 Nível"><i class="fas fa-plus-circle"></i></a>
-                                        {{/iflw}}
+                                        {{itemLevelControls h_con @root.actor}}
                                         <a class="item-control item-edit" title="Editar"><i class="fas fa-edit"></i></a>
                                         <a class="item-control item-delete" title="Deletar"><i class="fas fa-trash"></i></a>
                                     </div>
@@ -618,14 +610,12 @@
                             </tr>
                             {{#each actor.h_sub as |h_sub|}}    <!--Habilidades de Subterfúgio-->
                             <tr class="item" data-item-id="{{h_sub.id}}">
-                                <td class="mediaeval habName" style="min-width:140px;"><a class="rollable mediaeval dragable" data-item-id="{{h_sub.id}}" title="Rolar Habilidade">{{h_sub.name}}</a></td>
+                                <td class="mediaeval habName"><a class="rollable mediaeval dragable" data-item-id="{{h_sub.id}}" title="Rolar Habilidade">{{h_sub.name}}</a></td>
                                 <td class="mediaeval habTotal">{{#if h_sub.system.nao_rolar_sem_nivel}}{{#ifle h_sub.system.nivel 0}}<i class="fa-solid fa-ban"></i>{{/ifle}}{{#ifgr h_sub.system.nivel 0}}{{h_sub.system.total}}{{/ifgr}}{{else}}{{h_sub.system.total}}{{/if}}</td>
                                 <td class="mediaeval habNivel esconde">{{h_sub.system.nivel}}</td>
                                 <td style="text-align: right;">
                                     <div class="item-controls">
-                                        {{#iflw h_sub.system.nivel actor.system.estagio}}
-                                            <a class="item-control item-upp" title="Comprar 1 Nível"><i class="fas fa-plus-circle"></i></a>
-                                        {{/iflw}}
+                                        {{itemLevelControls h_sub @root.actor}}
                                         <a class="item-control item-edit" title="Editar"><i class="fas fa-edit"></i></a>
                                         <a class="item-control item-delete" title="Deletar"><i class="fas fa-trash"></i></a>
                                     </div>
@@ -643,14 +633,12 @@
                             </tr>
                             {{#each actor.h_inf as |h_inf|}}    <!--Habilidades de Influência-->
                             <tr class="item" data-item-id="{{h_inf.id}}">
-                                <td class="mediaeval habName" style="min-width:140px;"><a class="rollable mediaeval dragable" data-item-id="{{h_inf.id}}" title="Rolar Habilidade">{{h_inf.name}}</a></td>
+                                <td class="mediaeval habName"><a class="rollable mediaeval dragable" data-item-id="{{h_inf.id}}" title="Rolar Habilidade">{{h_inf.name}}</a></td>
                                 <td class="mediaeval habTotal">{{#if h_inf.system.nao_rolar_sem_nivel}}{{#ifle h_inf.system.nivel 0}}<i class="fa-solid fa-ban"></i>{{/ifle}}{{#ifgr h_inf.system.nivel 0}}{{h_inf.system.total}}{{/ifgr}}{{else}}{{h_inf.system.total}}{{/if}}</td>
                                 <td class="mediaeval habNivel esconde">{{h_inf.system.nivel}}</td>
                                 <td style="text-align: right;">
                                     <div class="item-controls">
-                                        {{#iflw h_inf.system.nivel actor.system.estagio}}
-                                            <a class="item-control item-upp" title="Comprar 1 Nível"><i class="fas fa-plus-circle"></i></a>
-                                        {{/iflw}}
+                                        {{itemLevelControls h_inf @root.actor}}
                                         <a class="item-control item-edit" title="Editar"><i class="fas fa-edit"></i></a>
                                         <a class="item-control item-delete" title="Deletar"><i class="fas fa-trash"></i></a>
                                     </div>
@@ -668,14 +656,12 @@
                             </tr>
                             {{#each actor.h_geral as |h_geral|}}        <!--Habilidades Gerais-->
                             <tr class="item" data-item-id="{{h_geral.id}}">
-                                <td class="mediaeval habName" style="min-width:140px;"><a class="rollable mediaeval dragable" data-item-id="{{h_geral.id}}" title="Rolar Habilidade">{{h_geral.name}}</a></td>
+                                <td class="mediaeval habName"><a class="rollable mediaeval dragable" data-item-id="{{h_geral.id}}" title="Rolar Habilidade">{{h_geral.name}}</a></td>
                                 <td class="mediaeval habTotal">{{#if h_geral.system.nao_rolar_sem_nivel}}{{#ifle h_geral.system.nivel 0}}<i class="fa-solid fa-ban"></i>{{/ifle}}{{#ifgr h_geral.system.nivel 0}}{{h_geral.system.total}}{{/ifgr}}{{else}}{{h_geral.system.total}}{{/if}}</td>
                                 <td class="mediaeval habNivel esconde">{{h_geral.system.nivel}}</td>
                                 <td style="text-align: right;">
                                     <div class="item-controls">
-                                        {{#iflw h_geral.system.nivel actor.system.estagio}}
-                                            <a class="item-control item-upp" title="Comprar 1 Nível"><i class="fas fa-plus-circle"></i></a>
-                                        {{/iflw}}
+                                        {{itemLevelControls h_geral @root.actor}}
                                         <a class="item-control item-edit" title="Editar"><i class="fas fa-edit"></i></a>
                                         <a class="item-control item-delete" title="Deletar"><i class="fas fa-trash"></i></a>
                                     </div>
@@ -802,7 +788,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="row dados">
+                <div class="row dados combat-side-by-side">
                     <div class="col-md-6"> <!--Tabela Defesas-->
                         <table>
                             {{#ifind document.system.combos "Defesa"}}
@@ -885,9 +871,7 @@
                                 <td class="mediaeval" style="text-align:left;">{{tecnica.system.fa}}</td>
                                 <td style="text-align: right;">
                                     <div class="item-controls">
-                                        {{#iflw tecnica.system.nivel actor.system.estagio}}
-                                            <a class="item-control item-upp" title="Comprar 1 Nível"><i class="fas fa-plus-circle"></i></a>
-                                        {{/iflw}}
+                                        {{itemLevelControls tecnica @root.actor}}
                                         <a class="item-control item-edit" title="Editar"><i class="fas fa-edit"></i></a>
                                         <a class="item-control item-delete" title="Deletar"><i class="fas fa-trash"></i></a>
                                     </div>
@@ -923,9 +907,7 @@
                                 {{/ifeq}}
                                 <td style="text-align: right;">
                                     <div class="item-controls">
-                                        {{#iflw tecnica.system.nivel actor.system.estagio}}
-                                            <a class="item-control item-upp" title="Comprar 1 Nível"><i class="fas fa-plus-circle"></i></a>
-                                        {{/iflw}}
+                                        {{itemLevelControls tecnica @root.actor}}
                                         <a class="item-control item-edit" title="Editar"><i class="fas fa-edit"></i></a>
                                         <a class="item-control item-delete" title="Deletar"><i class="fas fa-trash"></i></a>
                                     </div>
@@ -984,9 +966,7 @@
                                 <td class="mediaeval">{{magia.system.total.valor}}</td>
                                 <td style="text-align: right;">
                                     <div class="item-controls">
-                                        {{#iflw magia.system.nivel actor.system.estagio}}
-                                            <a class="item-control item-upp" title="Comprar 1 Nível"><i class="fas fa-plus-circle"></i></a>
-                                        {{/iflw}}
+                                        {{itemLevelControls magia @root.actor}}
                                         <a class="item-control item-edit" title="Editar"><i class="fas fa-edit"></i></a>
                                         <a class="item-control item-delete" title="Deletar"><i class="fas fa-trash"></i></a>
                                     </div>
@@ -1010,9 +990,7 @@
                                 <td class="mediaeval">{{magia.system.total.valor}}</td>
                                 <td style="text-align: right;">
                                     <div class="item-controls">
-                                        {{#iflw magia.system.nivel actor.system.estagio}}
-                                            <a class="item-control item-upp" title="Comprar 1 Nível"><i class="fas fa-plus-circle"></i></a>
-                                        {{/iflw}}
+                                        {{itemLevelControls magia @root.actor}}
                                         <a class="item-control item-edit" title="Editar"><i class="fas fa-edit"></i></a>
                                         <a class="item-control item-delete" title="Deletar"><i class="fas fa-trash"></i></a>
                                     </div>

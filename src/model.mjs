@@ -1,7 +1,7 @@
 import * as rules from '../vendor/rules.mjs';
 import schema from '../vendor/schema.json' with {type:'json'};
 
-export const VERSION='0.1.0';
+export const VERSION='1.0.0';
 export const ATTRS=['INT','AUR','CAR','FOR','FIS','AGI','PER'];
 export const TYPES=schema.Item.types;
 export const clone=value=>structuredClone(value);
@@ -73,25 +73,43 @@ export function viewActor(raw) {
  actor.deleteEmbeddedDocuments=()=>{throw Error('Há mais de uma raça ou profissão. Revise os itens antes de recalcular.');};
  return actor;
 }
-function numericTypes(actual,shape,label) {
- for(const [key,value] of Object.entries(shape)) {
-  if(typeof value==='number'&&(!Number.isFinite(actual?.[key])||typeof actual?.[key]!=='number'))throw Error(`Valor numérico inválido: ${label}.${key}.`);
-  if(object(value))numericTypes(actual?.[key],value,`${label}.${key}`);
+function prepareCalculationNumbers(data, schemaDefaults, label) {
+ for (const [key, defaultValue] of Object.entries(schemaDefaults)) {
+  if (typeof defaultValue === 'number') {
+   const value = data[key];
+   // Alguns campos do Foundry chegam vazios ou com o número gravado como texto.
+   let number = value ?? defaultValue;
+   if (typeof value === 'string' && /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(value.trim())) {
+    number = Number(value);
+   }
+   if (!Number.isFinite(number)) throw Error(`Valor numérico inválido: ${label}.${key}.`);
+   data[key] = number;
+  } else if (object(defaultValue)) {
+   prepareCalculationNumbers(data[key], defaultValue, `${label}.${key}`);
+  }
  }
 }
-export function recalculate(raw,mode='preserve') {
+
+function calculationActor(raw) {
+ const actor = viewActor(raw);
+ prepareCalculationNumbers(actor.system, defaults('Actor', 'Personagem'), 'personagem');
+ for (const item of actor.items) {
+  prepareCalculationNumbers(item.system, defaults('Item', item.type), item.name);
+ }
+ return actor;
+}
+
+export function recalculate(raw,mode='preserve',{initialEh=false}={}) {
  validateActor(raw);if(mode==='preserve')return clone(raw);
  if(!['pontos','sorteio'].includes(mode))throw Error('Escolha o modo de atributos da mesa.');
  const output=clone(raw);
  // Ordem sequencial elimina a dependência de múltiplos renders que existe no Foundry.
  for(let pass=0;pass<3;pass++) {
-  const actor=viewActor(output),data={document:actor,items:actor.items,options:{editable:true}};
-  numericTypes(actor.system,defaults('Actor','Personagem'),'personagem');
-  for(const item of actor.items)numericTypes(item.system,defaults('Item',item.type),item.name);
+  const actor=calculationActor(output),data={document:actor,items:actor.items,options:{editable:true}};
   const apply=updates=>{for(const [field,value] of Object.entries(updates)) {validateTree(value);if(value===undefined)throw Error(`Cálculo incompleto: ${field}.`);set(actor,field,value);set(output,field,value);}};
   const run=(fn,...args)=>{const update={};fn(data,update,...args);apply(update);};
   if(actor.raca)run(rules._preparaCaracRaciais);
-  for(const group of ['atributos','mod_racial','carac_sort'])for(const value of Object.values(actor.system[group]??{}))if(typeof value==='number'&&Math.abs(value)>1000)throw Error('Atributo fora do limite de cálculo da versão 0.1 (±1000). Use Preservar valores para consultar esse arquivo.');
+  for(const group of ['atributos','mod_racial','carac_sort'])for(const value of Object.values(actor.system[group]??{}))if(typeof value==='number'&&Math.abs(value)>1000)throw Error('Atributo fora do limite de cálculo (±1000). Use Preservar valores para consultar esse arquivo.');
   if(mode==='sorteio'&&actor.raca){run(rules._caracSort);run(rules._calculaAjuste);}
   if(mode==='pontos')run(rules._setPontosRaca);
   const effective=mode==='pontos'?rules._preparaEfeitosAtributos(data).efetivos:actor.system.atributos;
@@ -102,7 +120,9 @@ export function recalculate(raw,mode='preserve') {
   if(actor.raca&&actor.profissao)run(rules._attEfEhVB,effective);
   run(rules._attProximoEstag);
   const fisico=mode==='sorteio'?(actor.raca?rules._calculaAjuste(data,{}):{base:actor.system.atributos.FIS,efetivo:actor.system.atributos.FIS}):{base:actor.system.atributos.FIS,efetivo:effective.FIS};
-  apply(rules._calculaEhTemporaria(actor,fisico));
+  const stage=actor.system.estagio;
+  const baseEh=initialEh&&stage===1&&actor.raca&&actor.profissao?actor.profissao.system.eh_base+fisico.base:null;
+  apply(rules._calculaEhTemporaria(actor,fisico,stage,baseEh));
   run(rules._attKarmaMax,effective);run(rules._attRM,effective);run(rules._attRF,effective);
   rules._updateCombatItems(data,itemUpdates,effective);rules._updateMagiasItems(data,itemUpdates,effective);rules._updateTencnicasItems(data,itemUpdates,effective);
   for(const update of itemUpdates) {
@@ -115,8 +135,8 @@ export function recalculate(raw,mode='preserve') {
 export function levelUp(raw,mode,d10) {
  if(mode==='preserve')throw Error('Escolha Por pontos ou Por sorteio para usar a progressão calculada.');
  if(!Number.isInteger(d10)||d10<1||d10>10)throw Error('Informe um resultado de d10 entre 1 e 10.');
- const output=recalculate(raw,mode),actor=viewActor(output),s=actor.system;
- if(s.estagio>=100)throw Error('A versão 0.1 suporta até o estágio 100.');
+ const output=recalculate(raw,mode),actor=calculationActor(output),s=actor.system;
+ if(s.estagio>=100)throw Error('A ficha suporta até o estágio 100.');
  if(s.pontos_estagio.value<s.pontos_estagio.next)throw Error(`Experiência insuficiente: precisa de ${s.pontos_estagio.next} pontos.`);
  const faixa=d10<=2?'v1':d10<=5?'v2':d10<=8?'v3':'v4';
  const gain=actor.profissao?.system.lista_eh?.[faixa];
@@ -140,6 +160,14 @@ export function id(){const bytes=new Uint8Array(16);crypto.getRandomValues(bytes
 export function newItem(type,name) {
  if(!TYPES.includes(type))throw Error('Tipo de item não suportado para criação.');
  return {_id:id(),name,type,img:'icons/svg/item-bag.svg',system:defaults('Item',type),effects:[],flags:{}};
+}
+export function newCharacter(name,systemId) {
+ const actor={
+  _id:id(),name,type:'Personagem',img:'icons/svg/mystery-man.svg',
+  system:defaults('Actor','Personagem'),items:[],effects:[],flags:{},_stats:{systemId}
+ };
+ validateActor(actor);
+ return actor;
 }
 export function sampleActor() {
  const s=defaults('Actor','Personagem');s.estagio=3;s.raca='Humano';s.profissao='Guerreiro';s.pontos_estagio.value=31;
