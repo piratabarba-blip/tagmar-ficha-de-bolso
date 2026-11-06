@@ -40,9 +40,11 @@
    </div>
    <p id="catalog-count" class="muted" role="status"></p>
    <button type="button" id="catalog-add-skills" hidden></button>
-   <ul id="catalog-folders" aria-label="Pastas do Compêndio"></ul>
-   <ul id="catalog-results" aria-label="Resultados do Compêndio"></ul>
-   <button type="button" id="catalog-more" hidden>Mostrar mais</button>
+   <div id="catalog-scroll" role="region" aria-label="Pastas e itens do Compêndio" tabindex="0">
+    <ul id="catalog-folders" aria-label="Pastas do Compêndio"></ul>
+    <ul id="catalog-results" aria-label="Resultados do Compêndio"></ul>
+    <button type="button" id="catalog-more" hidden>Mostrar mais</button>
+   </div>
    <p class="catalog-credit">Projeto Tagmar · CC BY-NC-SA 3.0 BR</p>
   </section>
   <section id="manual-panel" aria-labelledby="create-title" hidden>

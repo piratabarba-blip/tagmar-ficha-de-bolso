@@ -189,9 +189,6 @@ function render(){
  }
  for(const link of $$('#sheet a')){if(!link.href){link.setAttribute('role','button');link.tabIndex=0;}if(link.title?.startsWith('Rolar'))link.title='Consultar / editar (rolagens de mesa no Foundry)';}
  setTab(tab);$('#filename').textContent=sourceName||session.actor.name;$('#save-state').textContent=session.dirty?'● Alterações ainda não exportadas':'Arquivo carregado • edição local';
- const sheet=$('.sheet-wrap');
- const tabs=$('#sheet .prim-tabs');
- sheet.parentElement.style.setProperty('--catalog-offset',`${tabs.getBoundingClientRect().top-sheet.getBoundingClientRect().top}px`);
  $('#actor-caption').textContent=`${session.actor.name} · ${session.actor.items.length} itens`;
  $('#undo').disabled=!session.undoStack.length;$('#redo').disabled=!session.redoStack.length;
  $('#calculation-status').textContent=mode==='preserve'?'Edição manual · totais preservados':'Recálculo automático ativo';
@@ -585,9 +582,10 @@ const catalogPageSize=20;
 let catalogMatches=[],catalogLimit=catalogPageSize;
 let catalogPath=[],catalogFolders=[],catalogSkillGroup=[];
 function renderCatalog(){
+ const showLocation=Boolean(searchKey($('#catalog-search').value));
  catalogResults.innerHTML=catalogMatches.slice(0,catalogLimit).map(({item,index,location})=>
   `<li class="catalog-item" draggable="true" data-catalog-index="${index}" title="${e(location)}">
-   <div><strong>${e(item.name)}</strong><small>${e(location)}</small></div>
+   <div><strong>${e(item.name)}</strong>${showLocation?`<small>${e(location)}</small>`:''}</div>
    <button type="button" aria-label="Adicionar ${e(item.name)}">+</button>
   </li>`).join('');
  $('#catalog-more').hidden=catalogLimit>=catalogMatches.length;
@@ -613,6 +611,7 @@ function filterCatalog(){
   :`Adicionar grupo (${catalogSkillGroup.length})`;
  catalogLimit=catalogPageSize;
  renderCatalog();
+ $('#catalog-scroll').scrollTop=0;
  $('.item-creator').scrollTop=0;
 }
 function resetCatalogFolder(){
