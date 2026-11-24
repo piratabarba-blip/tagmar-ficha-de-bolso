@@ -1,12 +1,12 @@
-# Tagmar — Ficha de Bolso 1.1
+# Tagmar — Ficha de Bolso 1.2
 
 Editor local para criar, consultar e editar personagens do Tagmar fora do Foundry. Comece no estágio 1 ou abra uma ficha exportada. Ao terminar, baixe o JSON para levar à mesa.
 
 Abra o editor no navegador ou na versão portátil para Windows. Você pode montar ou consultar seu personagem com o Foundry do mestre fechado. O editor funciona offline e os arquivos ficam no seu computador.
 
-**[Baixar o portátil para Windows (.exe)](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.1.0/Tagmar-Ficha-de-Bolso.exe)** · **[Baixar o editor HTML](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.1.0/Ficha.de.Bolso.html)** · [Baixar o pacote ZIP](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.1.0/tagmar-ficha-de-bolso-1.1.0.zip)
+**[Baixar o portátil para Windows (.exe)](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.2.0/Tagmar-Ficha-de-Bolso.exe)** · **[Baixar o editor HTML](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.2.0/Ficha.de.Bolso.html)** · [Baixar o pacote ZIP](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.2.0/tagmar-ficha-de-bolso-1.2.0.zip)
 
-Na **1.1**, as categorias e subpastas do Compêndio abrem e recolhem na própria lateral. Clique em **Raças** e depois em **Profissões** para alternar entre elas sem usar **Voltar**. [Histórico de versões](CHANGELOG.md)
+Na **1.2**, a criação tem um guia de 15 passos e os Grupos de Armas ficam em Combate, com uma lista de armas por sigla. [Histórico de versões](CHANGELOG.md)
 
 ![Ficha de exemplo com as abas no estilo do Foundry e o Compêndio de armas aberto na lateral direita](docs/ficha-compendio.png)
 

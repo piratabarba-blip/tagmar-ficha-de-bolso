@@ -1,5 +1,13 @@
 # Histórico de versões
 
+## 1.2.0
+
+- Guia de criação em 15 passos, com atalhos para o Compêndio e realces na ficha.
+- Grupos de Armas na aba Combate, com lista de armas por sigla.
+- Escolha de Caracterizações e registro na Biografia.
+- Atalhos de magias de ataque e cura para Reinos Conhecidos e Terras Selvagens.
+- Margem direita ajustada na impressão e abertura ilustrada.
+
 ## 1.1.0 — 06/11/2026
 
 - As dez categorias e suas subpastas agora abrem e recolhem na própria lateral, como no Compêndio do Foundry. As demais categorias continuam à vista e o botão **Voltar** saiu.

@@ -343,10 +343,10 @@ fs.mkdirSync(out,{recursive:true});
   assert.equal(await catalogType.inputValue(),'');
   assert.deepEqual(await catalogType.locator('option').allTextContents(),[
    'Todas as categorias','01 - Raças','02 - Profissões','03 - Habilidades','04 - Combate','05 - Defesa',
-   '06 - Técnicas de Combate','07 - Magias','08 - Magias Ancestrais','09 - Magias Perdidas','10 - Pertences e Afins'
+   '06 - Técnicas de Combate','07 - Magias','07.1 - Magias de ataque','07.2 - Magias de cura','08 - Magias Ancestrais','09 - Magias Perdidas','10 - Pertences e Afins'
   ]);
   const categories=creation.locator('#catalog-folders > li > details');
-  assert.equal(await categories.count(),10);
+  assert.equal(await categories.count(),12);
   const races=categories.nth(0);
   const professions=categories.nth(1);
   assert.equal(await races.evaluate(node=>node.open),true);
@@ -470,6 +470,11 @@ fs.mkdirSync(out,{recursive:true});
   await addFromCatalog('Mago');
   await creation.locator('[name="system.deus"]').fill('Plandis');
   await creation.locator('[name="system.especializacao"]').selectOption('Colégio Alquímico');
+  await creation.click('nav a[data-tab="combate"]');
+  assert.equal(await creation.locator('.tab.active .combat-weapon-groups .weapon-group-help').count(),16);
+  await creation.getByRole('button',{name:'PP · Penetração pesada',exact:true}).focus();
+  assert.deepEqual(await creation.locator('#help-tip li').allTextContents(),['Lança de Cavalaria','Lança de Justa']);
+  await creation.keyboard.press('Escape');
   await creation.locator('.addGrupoArmas[data-item-id="EL"]').click();
   await catalogType.selectOption('03');
   await catalogSearch.fill('misticismo');

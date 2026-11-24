@@ -1,26 +1,49 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src 'none'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-<title>Tagmar • Ficha de Bolso 1.1</title><style>/* STYLES */</style></head><body>
-<header class="appbar"><div class="brand"><img class="brand-logo" src="__TAGMAR_LOGO__" alt="Tagmar Zero"><small>FICHA DE BOLSO <b>1.1</b></small></div><div class="file-state"><strong id="filename">Sua aventura, sempre com você.</strong><span id="save-state">Editor local • sem conexão com a mesa</span></div><div class="app-actions"><button id="new-actor" hidden>Novo personagem</button><button id="open">Abrir JSON</button><button id="save" class="primary" disabled>Salvar JSON</button><button id="help" aria-label="Ajuda">?</button></div></header>
+<title>Tagmar • Ficha de Bolso 1.2</title><style>/* STYLES */</style></head><body>
+<header class="appbar"><a class="brand" href="https://tagmarzero.com/zeropedia/" target="_blank" rel="noopener" aria-label="Tagmar Zero · Voltar para a biblioteca"><img class="brand-logo" src="__TAGMAR_LOGO__" alt="Tagmar Zero"><small>FICHA DE BOLSO <b>1.2</b></small></a><div class="file-state"><strong id="filename">Sua aventura, sempre com você.</strong><span id="save-state">Editor local • sem conexão com a mesa</span></div><div class="app-actions"><button id="new-actor" hidden>Novo personagem</button><button id="open">Abrir JSON</button><button id="save" class="primary" disabled>Salvar JSON</button><button id="help" aria-label="Ajuda">?</button></div></header>
 <main id="welcome">
+ <div class="welcome-backdrop" aria-hidden="true"><img alt="" src="__TAGMAR_WELCOME_BACKGROUND__"></div>
  <section class="hero">
   <div class="hero-intro">
    <div class="hero-copy">
     <span class="eyebrow">SEU PERSONAGEM, FORA DA MESA</span>
     <h1>A aventura continua<br>na sua ficha.</h1>
     <p>Crie um personagem com os itens do Compêndio ou abra sua ficha exportada do Foundry. Tudo fica no seu computador.</p>
-    <div class="hero-actions"><button class="primary" id="new-character">Criar personagem</button><button id="welcome-open">Abrir minha ficha JSON</button><button id="example">Experimentar um personagem</button></div>
+    <div class="hero-actions">
+     <button type="button" id="new-character"><span>Criar personagem</span></button>
+     <button type="button" id="welcome-open"><span>Abrir minha ficha JSON</span></button>
+     <button type="button" id="example"><span>Experimentar um personagem</span></button>
+    </div>
     <div id="recovery"></div>
    </div>
    <div class="hero-art">
     <img src="__TAGMAR_LANDALFO__" width="640" height="960" alt="Landalfo, mago élfico com um cajado e uma fênix bordada no manto">
    </div>
   </div>
-  <div class="steps"><article><b>01</b><h3>Exporte no Foundry</h3><p>Na lista de Atores, clique com o botão direito no personagem e escolha Exportar dados.</p></article><article><b>02</b><h3>Edite aqui</h3><p>Use as abas da ficha, os itens e os controles de progressão. Não precisa deixar a mesa aberta.</p></article><article><b>03</b><h3>Leve de volta</h3><p>Salve um novo JSON e importe em uma cópia da ficha no Foundry para conferir com o mestre.</p></article></div>
-  <p class="muted">Tagmar XXX e Tagmar 3ER Oficial • Personagens • Foundry V14<br>Fichas por pontos e sorteio, com os templates do sistema.</p>
+  <div class="steps">
+   <article class="step-export"><b>01</b><h3>Exporte no Foundry</h3><p>Na lista de Atores, clique com o botão direito no personagem e escolha Exportar dados.</p></article>
+   <article class="step-edit"><b>02</b><h3>Edite aqui</h3><p>Use as abas da ficha, os itens e os controles de progressão. Não precisa deixar a mesa aberta.</p></article>
+   <article class="step-import"><b>03</b><h3>Leve de volta</h3><p>Salve um novo JSON e importe em uma cópia da ficha no Foundry para conferir com o mestre.</p></article>
+  </div>
+  <p class="muted">Tagmar Master e Tagmar 3ER Oficial • Personagens • Foundry V14<br>Fichas por pontos e sorteio, com os templates do sistema.</p>
  </section>
 </main>
-<main id="workspace" hidden><aside class="tools"><section><span class="eyebrow">MESA DE TRABALHO</span><h2>Minha ficha</h2><div class="control-help"><label for="mode">Cálculos</label><button class="help-dot" type="button" aria-label="Ajuda sobre modos de cálculo" data-tip="Em Por pontos ou Por sorteio, os totais são recalculados ao escolher o modo e ao confirmar uma edição. Use Preservar valores para ajustes manuais.">?</button></div><select id="mode"><option value="preserve">Preservar valores</option><option value="pontos">Por pontos</option><option value="sorteio">Por sorteio</option></select><p id="calculation-status" class="notice" role="status"></p></section><section><div class="two"><button id="undo">↶ Desfazer</button><button id="redo">↷ Refazer</button></div><div class="control-help"><button id="review">Conferir alterações</button><button class="help-dot" type="button" aria-label="Ajuda sobre conferir alterações" data-tip="Compara a ficha atual com o JSON aberto. Você pode conferir cada mudança e baixar um relatório.">?</button></div><div class="control-help"><button id="inventory">Todos os itens</button><button class="help-dot" type="button" aria-label="Ajuda sobre todos os itens" data-tip="Abre os itens agrupados por categoria. Busque pelo nome ou pelo tipo e clique num item para abrir a ficha dele.">?</button></div><div class="control-help"><button id="import-item">Importar item JSON</button><button class="help-dot" type="button" aria-label="Ajuda sobre importar itens" data-tip="Abre um item Tagmar exportado do Foundry. Revise os campos e salve para adicionar uma cópia à ficha.">?</button></div></section><section><div class="control-help"><button id="advanced">Dados avançados</button><button class="help-dot" type="button" aria-label="Ajuda sobre dados avançados" data-tip="Abre o JSON completo para edição direta. Use para campos que não aparecem nas abas da ficha.">?</button></div><div class="control-help"><button id="portrait">Retrato local</button><button class="help-dot" type="button" aria-label="Ajuda sobre retrato local" data-tip="Escolhe uma imagem para esta sessão. O caminho do retrato do Foundry é preservado no JSON.">?</button></div><div class="control-help"><button id="print">Imprimir ficha</button><button class="help-dot" type="button" aria-label="Ajuda sobre imprimir a ficha" data-tip="Abre a janela de impressão do navegador. Nela você pode escolher a impressora ou salvar em PDF.">?</button></div><p class="muted">Retratos do servidor podem não estar disponíveis offline. O caminho original é preservado no JSON.</p></section><section><span class="eyebrow">CONFERÊNCIA</span><div id="warnings"></div><p class="muted" id="draft-state">Salve um JSON para levar a ficha com você.</p></section></aside>
+<main id="workspace" hidden><aside class="tools"><section><span class="eyebrow">MESA DE TRABALHO</span><h2>Minha ficha</h2><div class="control-help"><label for="mode">Cálculos</label><button class="help-dot" type="button" aria-label="Ajuda sobre modos de cálculo" data-tip="Em Por pontos ou Por sorteio, os totais são recalculados ao escolher o modo e ao confirmar uma edição. Use Preservar valores para ajustes manuais.">?</button></div><select id="mode"><option value="preserve">Preservar valores</option><option value="pontos">Por pontos</option><option value="sorteio">Por sorteio</option></select><p id="calculation-status" class="notice" role="status"></p><button type="button" id="start-creation-help" aria-controls="sheet-creation-help" aria-expanded="false"><span>Me ajude a criar a ficha</span><small>Guia passo a passo</small></button>
+</section><section><div class="two"><button id="undo">↶ Desfazer</button><button id="redo">↷ Refazer</button></div><div class="control-help"><button id="review">Conferir alterações</button><button class="help-dot" type="button" aria-label="Ajuda sobre conferir alterações" data-tip="Compara a ficha atual com o JSON aberto. Você pode conferir cada mudança e baixar um relatório.">?</button></div><div class="control-help"><button id="inventory">Todos os itens</button><button class="help-dot" type="button" aria-label="Ajuda sobre todos os itens" data-tip="Abre os itens agrupados por categoria. Busque pelo nome ou pelo tipo e clique num item para abrir a ficha dele.">?</button></div><div class="control-help"><button id="import-item">Importar item JSON</button><button class="help-dot" type="button" aria-label="Ajuda sobre importar itens" data-tip="Abre um item Tagmar exportado do Foundry. Revise os campos e salve para adicionar uma cópia à ficha.">?</button></div></section><section><div class="control-help"><button id="advanced">Dados avançados</button><button class="help-dot" type="button" aria-label="Ajuda sobre dados avançados" data-tip="Abre o JSON completo para edição direta. Use para campos que não aparecem nas abas da ficha.">?</button></div><div class="control-help"><button id="portrait">Retrato local</button><button class="help-dot" type="button" aria-label="Ajuda sobre retrato local" data-tip="Escolhe uma imagem para esta sessão. O caminho do retrato do Foundry é preservado no JSON.">?</button></div><div class="control-help"><button id="print">Imprimir ficha</button><button class="help-dot" type="button" aria-label="Ajuda sobre imprimir a ficha" data-tip="Abre a janela de impressão do navegador. Nela você pode escolher a impressora ou salvar em PDF.">?</button></div><p class="muted">Retratos do servidor podem não estar disponíveis offline. O caminho original é preservado no JSON.</p></section><section><span class="eyebrow">CONFERÊNCIA</span><div id="warnings"></div><p class="muted" id="draft-state">Salve um JSON para levar a ficha com você.</p></section></aside>
+ <div class="sheet-side">
+ <aside id="sheet-creation-help" aria-labelledby="creation-help-topic" hidden>
+  <header><span id="creation-help-step" class="eyebrow"></span><button type="button" id="creation-help-close" aria-label="Recolher ajuda">×</button></header>
+  <div id="creation-help-body">
+   <h2 id="creation-help-topic" tabindex="-1"></h2>
+   <ol id="creation-help-instructions"></ol>
+   <p id="creation-help-note" hidden></p>
+   <ul id="creation-help-profile"></ul>
+   <div id="creation-help-shortcuts" class="sheet-help-actions" aria-label="Atalhos na ficha"></div>
+   <div id="creation-help-reading" class="sheet-help-actions" aria-label="Ler regras"></div>
+  </div>
+  <footer><button type="button" id="creation-help-back">← Anterior</button><button type="button" id="creation-help-next" class="primary">Próximo →</button></footer>
+ </aside>
  <aside class="item-creator" aria-label="Compêndio e criação de itens">
   <div class="item-panel-tabs" role="group" aria-label="Ferramentas de itens">
    <button type="button" class="item-panel-tab" data-panel="catalog" aria-controls="catalog-panel" aria-pressed="true">Compêndio</button>
@@ -49,9 +72,10 @@
   <div id="create-types"></div>
   </section>
  </aside>
- <div class="sheet-wrap"><div class="sheet-caption"><span id="actor-caption"></span><span>EDITOR OFFLINE · 1.1</span></div><section id="sheet" class="tagmar sheet actor tagmar-foundry-sheet"><div class="window-content" id="sheet-body"></div></section></div></main>
+ </div>
+ <div class="sheet-wrap"><div class="sheet-caption"><span id="actor-caption"></span><span>EDITOR OFFLINE · 1.2</span></div><section id="sheet" class="tagmar sheet actor tagmar-foundry-sheet"><div class="window-content" id="sheet-body"></div></section></div></main>
 <main id="print-sheet" aria-label="Ficha de personagem para impressão"></main>
-<footer class="app-footer">Tagmar • Implementação das fichas: Marcos Walker e Vinicius Fernandez. Editor portátil 1.1.</footer>
+<footer class="app-footer">Tagmar • Implementação das fichas: Marcos Walker e Vinicius Fernandez. Editor portátil 1.2.</footer>
 <input id="actor-file" type="file" accept=".json,application/json" hidden><input id="item-file" type="file" accept=".json,application/json" hidden><input id="image-file" type="file" accept="image/png,image/jpeg,image/webp" hidden>
 <dialog id="modal"><header><h2 id="modal-title"></h2><button id="modal-close" aria-label="Fechar janela">×</button></header><div id="modal-body"></div><footer id="modal-actions"></footer></dialog><div id="toast" role="status" aria-live="polite"></div>
 <div id="help-tip" role="tooltip" hidden></div>

@@ -41,6 +41,11 @@
  body:has(#print-sheet:not(:empty)) > :not(#print-sheet) { display:none!important; }
  #print-sheet:not(:empty) {
   display:block;
+  box-sizing:border-box;
+  width:100%;
+  min-width:0;
+  margin:0;
+  padding-right:5mm;
   font:9pt/1.25 Arial,sans-serif;
   overflow-wrap:anywhere;
   print-color-adjust:exact;
@@ -51,7 +56,7 @@
   display:flex; gap:3mm; align-items:center; padding:2.2mm 2.5mm; margin-bottom:2.5mm;
   border:3px double var(--print-strong-line); break-inside:avoid; break-after:avoid;
  }
- .print-header > div { flex:1; }
+ .print-header > div { flex:1; min-width:0; }
  .print-header p { margin:0 0 .6mm; font-size:7.5pt; letter-spacing:.07em; text-transform:uppercase; }
  .print-header h1 { margin:0; font:bold 21pt/1.05 Georgia,serif; }
  .print-header strong { padding:1mm 2mm; border:1px solid var(--print-line); font-size:9pt; white-space:nowrap; }
@@ -65,7 +70,7 @@
   font:bold 11pt/1 Georgia,serif; letter-spacing:.045em; text-transform:uppercase;
   break-after:avoid;
  }
- .print-overview { display:grid; grid-template-columns:43% 1fr; gap:2mm; align-items:start; break-inside:avoid; }
+ .print-overview { display:grid; grid-template-columns:43% minmax(0,1fr); gap:2mm; align-items:start; break-inside:avoid; }
  .print-fields { display:grid; grid-template-columns:1fr 1fr; gap:0; margin:0 0 1mm; border:1px solid var(--print-line); }
  .print-fields > div { min-width:0; padding:.55mm 1mm; border-bottom:1px solid var(--print-soft-line); }
  .print-fields dt { font-size:7pt; color:var(--print-muted); }
@@ -76,7 +81,7 @@
  .print-inline-fields > div { flex:1 1 auto; border-bottom:0; border-right:1px solid var(--print-soft-line); }
  .print-inline-fields > div:last-child { border-right:0; }
 
- .print-table { width:100%; table-layout:fixed; border-collapse:collapse; margin:0 0 1.1mm; }
+ .print-table { width:100%; max-width:100%; table-layout:fixed; border-collapse:collapse; margin:0 0 1.1mm; }
  .print-table-short { break-inside:avoid; }
  .print-table thead { display:table-header-group; break-inside:avoid; break-after:avoid; }
  .print-table tr { break-inside:avoid; }

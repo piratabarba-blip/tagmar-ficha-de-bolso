@@ -15,11 +15,13 @@ for(const mode of ['pontos','sorteio']){
 }
 const templateCode=`const TEMPLATES={pontos:${templates.pontos},sorteio:${templates.sorteio}};`;
 // Temas próprios do sistema; URLs externas e fontes dependentes do Foundry são removidas.
-const css=[read('vendor/grid.css'),read('vendor/sheet.css').replace(/@font-face\s*\{[^}]*\}/g,'').replace(/url\([^)]*\)/g,'none'),read('vendor/foundry-theme.css'),read('src/app.css'),read('src/print.css')].join('\n');
 const catalog=read('vendor/catalogo-tagmar.json').replace(/</g,'\\u003c');
-const script=read('vendor/handlebars.runtime.min.js')+'\n(()=>{\nconst schema='+read('vendor/schema.json')+';\nconst CATALOG='+catalog+';\n'+rules+'\n'+model+'\n'+templateCode+'\n'+read('src/print.js')+'\n'+read('src/app.js')+'\n})();';
+const creationHelp=JSON.stringify(JSON.parse(read('src/creation-help.json'))).replace(/</g,'\\u003c');
+const cardData=file=>'data:image/webp;base64,'+fs.readFileSync(path.join(root,'src/cards',file)).toString('base64');
+const css=[read('vendor/grid.css'),read('vendor/sheet.css').replace(/@font-face\s*\{[^}]*\}/g,'').replace(/url\([^)]*\)/g,'none'),read('vendor/foundry-theme.css'),read('src/app.css').replace(/url\(cards\/([a-z-]+\.webp)\)/g,(_,file)=>'url('+cardData(file)+')'),read('src/print.css')].join('\n');
+const script=read('vendor/handlebars.runtime.min.js')+'\n(()=>{\nconst schema='+read('vendor/schema.json')+';\nconst CATALOG='+catalog+';\n'+rules+'\n'+model+'\n'+templateCode+'\n'+read('src/print.js')+'\n'+read('src/app.js').replace('/*SHEET_HELP_DATA*/{rules:[],traits:[]}',()=>creationHelp)+'\n})();';
 const notices=['LICENSE.md','vendor/GPL-3.0.txt','vendor/TAGMAR-LICENSE.md','vendor/HANDLEBARS-LICENSE.txt','vendor/BOOTSTRAP-LICENSE.txt'].map(file=>file+'\n\n'+read(file)).join('\n\n--------------------\n\n');
 const noticeHtml=notices.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-const html=read('src/shell.html').replace('__TAGMAR_LOGO__',()=>logo).replace('__TAGMAR_LANDALFO__',()=>landalfo).replace('/* STYLES */',()=>css).replace('/* SCRIPT */',()=>script.replace(/<\/script/gi,'<\\/script')).replace('</body>',()=>`<template id="license-notices"><pre>${noticeHtml}</pre></template></body>`);
+const html=read('src/shell.html').replace('__TAGMAR_LOGO__',()=>logo).replace('__TAGMAR_LANDALFO__',()=>landalfo).replace('__TAGMAR_WELCOME_BACKGROUND__',()=>cardData('ponte-montanhas.webp')).replace('/* STYLES */',()=>css).replace('/* SCRIPT */',()=>script.replace(/<\/script/gi,'<\\/script')).replace('</body>',()=>`<template id="license-notices"><pre>${noticeHtml}</pre></template></body>`);
 fs.writeFileSync(path.join(root,'Ficha de Bolso.html'),html,'utf8');
 console.log(`HTML offline construído: ${(Buffer.byteLength(html)/1024).toFixed(0)} KB. Nenhuma dependência de rede.`);

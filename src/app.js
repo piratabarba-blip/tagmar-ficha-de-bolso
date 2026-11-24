@@ -4,7 +4,7 @@ const e=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;',
 const editorLogo = $(".brand-logo").src;
 let session=null,mode='preserve',tab='basico',sourceName='',draftTimer,toastTimer,portraitPreview='';
 let newSheet=false;
-const DRAFT='tagmar-ficha-bolso-0.1'; // Mantém acesso aos rascunhos da prévia no mesmo caminho.
+const DRAFT='tagmar-ficha-bolso-0.1'; // Mantém acesso aos rascunhos da versão anterior.
 const placeholder='data:image/svg+xml;charset=utf-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160"><rect width="160" height="160" rx="16" fill="#211a26"/><circle cx="80" cy="57" r="25" fill="#a08c76"/><path d="M30 144v-24a50 50 0 0 1 100 0v24" fill="#a08c76"/></svg>');
 function safeImage(src){return /^data:image\/(png|jpeg|webp);base64,[a-zA-Z0-9+/=\s]+$/.test(src??'')?src:placeholder;}
 function safeRich(text) {
@@ -54,7 +54,7 @@ Handlebars.registerHelper('itemLevelControls',(item,actor)=>{
 });
 Handlebars.registerHelper('selectOptions',(values,o)=>new Handlebars.SafeString((values??[]).map(v=>{const value=v[o.hash.valueAttr??'key'];return `<option value="${e(value)}" ${String(value)===String(o.hash.selected)?'selected':''}>${e(value)}</option>`;}).join('')));
 Handlebars.registerHelper('editor',value=>new Handlebars.SafeString(
- `<div class="bio-preview" role="region" aria-label="Biografia" tabindex="0">${safeRich(value) || 'Biografia ainda vazia.'}</div><button type="button" class="edit-biography">Editar biografia</button>`));
+ `<div class="bio-preview" role="region" aria-label="Biografia" tabindex="0">${safeRich(value) || 'Biografia ainda vazia.'}</div><button type="button" class="edit-biography">Editar biografia</button> <button type="button" class="edit-characterizations">Escolher Caracterizações</button>`));
 
 const richInitial = new WeakMap();
 const richCommands = [
@@ -115,11 +115,11 @@ function richField(key, value) {
 }
 
 function showBiography() {
- modal("Editar biografia", richEditor(session.actor.system.descricao, "Biografia"), [
+ modal("Editar biografia", richEditor(biographyWithoutCharacterizations(session.actor.system.descricao), "Biografia"), [
   {label: "Cancelar", run: close},
   {label: "Salvar biografia", primary: true, run: () => {
    const value = readRich($("#modal-body .rich-content"));
-   if (value !== undefined) checkpoint("Editar biografia", actor => set(actor, "system.descricao", value), {calculate: false});
+   if (value !== undefined) checkpoint("Editar biografia", actor => set(actor, "system.descricao", biographyWithCharacterizations(value,existingCharacterizations(actor))), {calculate: false});
    close();
   }}
  ]);
@@ -171,6 +171,41 @@ function load(raw,name,recovered,{created=false}={}) {
  if(recovered){session.original=recovered.original;session.saved=recovered.saved??JSON.stringify(recovered.original);mode=recovered.mode;$('#mode').value=mode;}
  $('#welcome').hidden=true;$('#workspace').hidden=false;$('#save').disabled=false;$('#new-actor').hidden=false;render();
 }
+const weaponGroupNames = {
+ CD:'Combate desarmado', CI:'Combate de imobilização', CL:'Corte leve', CLD:'Combate leve à distância',
+ EL:'Esmagamento leve', CmE:'Corte médio com espadas', CmM:'Corte médio com machados', EM:'Esmagamento médio',
+ PmA:'Penetração média com arcos', PmL:'Penetração média com lanças', CpE:'Corte pesado com espadas',
+ CpM:'Corte pesado com machados', EP:'Esmagamento pesado', PP:'Penetração pesada',
+ PpA:'Penetração pesada com arcos', PpB:'Penetração pesada com bestas'
+};
+function addWeaponGroupHelp(){
+ const levels = $('#sheet .addGrupoArmas')?.closest('tr');
+ const table = levels?.closest('table');
+ const search = $('#sheet .tab[data-tab="combate"] .searchCombate')?.closest('.row');
+ if (table && search) {
+  const container = document.createElement('div');
+  container.className = 'combat-weapon-groups';
+  container.append(table);
+  search.after(container);
+ }
+ const headings = levels?.previousElementSibling;
+ if (!headings) return;
+ for (const control of levels.querySelectorAll('.addGrupoArmas[data-item-id]')) {
+  const code = control.dataset.itemId;
+  const heading = headings.cells[control.closest('td').cellIndex];
+  if (!heading || !weaponGroupNames[code]) continue;
+  const weapons = [...new Set(CATALOG.filter(item => item.type === 'Combate' && item.category === '04' && item.folders[1] === code)
+   .map(item => item.name))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'weapon-group-help';
+  button.textContent = code;
+  button.setAttribute('aria-label',code + ' · ' + weaponGroupNames[code]);
+  button.dataset.tip = code + ' · ' + weaponGroupNames[code];
+  button.dataset.weaponNames = JSON.stringify(weapons);
+  heading.replaceChildren(button);
+ }
+}
 function render(){
  if(!session)return;const scroll=window.scrollY;
  hideHelpTip();
@@ -188,6 +223,7 @@ function render(){
   if(field.type==='number')field.step='any';
  }
  for(const link of $$('#sheet a')){if(!link.href){link.setAttribute('role','button');link.tabIndex=0;}if(link.title?.startsWith('Rolar'))link.title='Consultar / editar (rolagens de mesa no Foundry)';}
+ addWeaponGroupHelp();
  setTab(tab);$('#filename').textContent=sourceName||session.actor.name;$('#save-state').textContent=session.dirty?'● Alterações ainda não exportadas':'Arquivo carregado • edição local';
  $('#actor-caption').textContent=`${session.actor.name} · ${session.actor.items.length} itens`;
  $('#undo').disabled=!session.undoStack.length;$('#redo').disabled=!session.redoStack.length;
@@ -214,12 +250,392 @@ async function openFile(file){
 $('#actor-file').onchange=async event=>{try{await openFile(event.target.files[0]);}catch(err){fail(err);}finally{event.target.value='';}};
 for(const id of ['open','welcome-open'])$('#'+id).onclick=()=>$('#actor-file').click();
 $('#example').onclick=()=>{if(replaceAllowed()){load(sampleActor(),'personagem-exemplo.json');applyCalculationMode('pontos');}};
+
+const sheetHelpData = /*SHEET_HELP_DATA*/{rules:[],traits:[]};
+const sheetHelpRules = new Map(sheetHelpData.rules.map(rule => [rule.id,rule]));
+const sheetTraits = new Map(sheetHelpData.traits.map(trait => [trait.id,trait]));
+const creationHelp = [
+ {title:'Profissão',
+  instructions:[
+   "No Compêndio, abra Criação de Fichas ou Terras Selvagens, conforme o livro da sua mesa.",
+   "Escolha seu papel no grupo. Guerreiro luta na frente. Ladino se destaca em ações furtivas.",
+   "Clique no + da profissão escolhida. Confira o campo Profissão na aba Básico."
+  ],
+  actions:[['Profissões','basico','02']], rules:[['Como escolher a profissão','regras-3-02-2-2']]},
+ {title:'Raça',
+  instructions:[
+   "No Compêndio, abra a pasta do livro que sua mesa usa. Veja no link abaixo quais raças podem seguir sua profissão.",
+   "Clique no + ao lado da raça escolhida.",
+   "Na aba Básico, confira o nome no campo Raça e os valores na linha Modificador Racial."
+  ],
+  actions:[['Raças','basico','01']], rules:[['Raças e modificadores','regras-3-02-2-2']]},
+ {title:'Dados do personagem', focus:'profile',
+  instructions:[
+   "Na aba Básico, clique nos campos destacados e digite a idade, a altura em metros e o peso em quilos. Use as referências abaixo.",
+   "Preencha Classe Social conforme combinado com o mestre. Escolha uma Especialização quando a mesa liberar."
+  ],
+  actions:[['Realçar dados na ficha','basico',null,'profile']], rules:[['Idade, altura e peso','regras-3-02-2-2'],['Classe social','complementares-156'],['Especialização da profissão','regras-3-02-7-3']]},
+ {title:'Atributos', focus:'attributes',
+  instructions:[
+   "Pergunte ao mestre como a mesa define os atributos. No menu Cálculos, escolha Por pontos ou Por sorteio.",
+   "Na aba Básico, digite os valores na linha Ajuste. Use o botão Atributos na ficha para realçar essa linha.",
+   "Se estiver usando pontos, acompanhe Pontos Gastos e o saldo no topo da tabela. Se estiver usando sorteio, confira se anotou os valores sorteados."
+  ],
+  actions:[['Atributos na ficha','basico',null,'attributes']], rules:[['Como distribuir os atributos','regras-3-02-2-2']]},
+ {title:'Valores da ficha', focus:'values',
+  instructions:[
+   "Na aba Básico, clique em Valores na ficha para destacar os campos calculados.",
+   "Confira Energia Física (EF), Energia Heroica (EH), Karma, Resistência Física, Resistência à Magia e Velocidade Base.",
+   "Confira também a Absorção (ABS). Ela vem das proteções equipadas e tem um campo próprio."
+  ],
+  actions:[['Valores na ficha','basico',null,'values']], rules:[['Características secundárias','regras-3-02-2-2'],['Resistências','regras-3-02-2-3']]},
+ {title:'Defina sua iniciativa', focus:'initiative',
+  instructions:[
+   "Quando começar um combate, role um dado de dez lados (1d10). Quem tirar o maior resultado age primeiro. Em caso de empate, só os empatados rolam de novo.",
+   "Em combates pequenos, o mestre pode pedir que você some Agilidade, Percepção, Intelecto ou uma combinação deles. Pergunte qual regra a mesa usa.",
+   "Se quiser anotar o resultado, clique em Iniciativa na ficha e digite no campo destacado."
+  ],
+  actions:[['Iniciativa na ficha','basico',null,'initiative']], rules:[['Regra de iniciativa','regras-3-02-4-2']]},
+ {title:'Habilidades',
+  instructions:[
+   "Na aba Habilidades, confira quantos pontos você tem para gastar.",
+   "No Compêndio, abra um grupo e clique no + ao lado da habilidade que quer incluir.",
+   "Na aba Habilidades, use + ou − na linha da habilidade para ajustar o nível. Confira o saldo a cada compra."
+  ],
+  actions:[['Habilidades na ficha','habilidades'],['Compêndio de habilidades','habilidades','03']], rules:[['Comprar habilidades','regras-3-02-3-3']]},
+ {title:'Grupos de armas',
+  instructions:[
+   "Na aba Combate, procure Pontos para Grupo de Armas logo abaixo da busca.",
+   "Passe o mouse ou toque numa sigla para descobrir quais armas estão no grupo. Escolha os grupos das armas que pretende usar.",
+   "Na coluna do grupo escolhido, use + para subir ou − para baixar o nível. Confira os pontos que restaram."
+  ],
+  catalog:'04', actions:[['Grupos de armas na ficha','combate',null,'weapon-groups']], rules:[['Comprar grupos de armas','regras-3-02-4-6']]},
+ {title:'Armas',
+  instructions:[
+   "No Compêndio de armas, procure uma arma de um grupo que você escolheu no passo anterior.",
+   "Confira com a mesa se pode usar a arma. Clique no + ao lado dela para adicionar.",
+   "Na aba Combate, confira se a arma apareceu em Ataques."
+  ],
+  actions:[['Armas na ficha','combate'],['Compêndio de armas','combate','04']], rules:[['Consultar armas e itens','regras-3-02-6-3']]},
+ {title:'Proteções',
+  instructions:[
+   "No Compêndio de proteções, escolha armadura, escudo ou elmo conforme as regras da sua mesa. Clique no + ao lado do item.",
+   "Na aba Combate, use o ícone Equipar na linha da proteção. Depois confira Defesa e Absorção (ABS) na aba Básico."
+  ],
+  actions:[['Proteções na ficha','combate'],['Compêndio de proteções','combate','05']], rules:[['Consultar proteções e itens','regras-3-02-6-3']]},
+ {title:'Técnicas de combate',
+  instructions:[
+   "Na aba Combate, veja quantos Pontos para Técnicas de Combate você tem.",
+   "No Compêndio de técnicas, procure uma técnica permitida para sua profissão. Consulte a regra abaixo para conferir os requisitos.",
+   "Clique no + para adicionar a técnica. Volte à aba Combate para ajustar o nível e conferir o saldo."
+  ],
+  actions:[['Combate na ficha','combate'],['Compêndio de técnicas','combate','06']], rules:[['Adquirir técnicas de combate','regras-3-02-4-6']]},
+ {title:'Magia',
+  instructions:[
+   "Se sua profissão usa magia, abra no Compêndio a pasta dela e confira com o mestre quais listas você pode usar.",
+   "Clique no + ao lado da magia permitida. Na aba Magia, ajuste o nível e confira o custo e os pontos que restaram."
+  ], note:"Se a sua profissão não usa magia, clique em Próximo até chegar a Equipamento.",
+  actions:[['Magia na ficha','magia'],['Compêndio de magias','magia','07']], rules:[['Adquirir magias','regras-3-02-5-5']]},
+ {title:'Magias de ataque e cura',
+  instructions:[
+   "Use Magias de ataque ou Magias de cura para abrir a lista. As duas reúnem opções dos Reinos Conhecidos e das Terras Selvagens.",
+   "Se você já aprendeu uma magia com esse efeito, adicione a opção correspondente com o +. Ela aparece na aba Combate para usar na resolução."
+  ], note:"Esse atalho registra o efeito na aba Combate. Para aprender a magia, use a etapa anterior.",
+  actions:[['Magias de ataque','combate','07.1'],['Magias de cura','combate','07.2']], rules:[['Consultar regras de magia','regras-3-02-5-5']]},
+ {title:'Equipamento',
+  instructions:[
+   "Abra Posses iniciais e confira quais itens sua profissão recebe ao começar.",
+   "No Compêndio, busque cada item pelo nome e clique no + ao lado dele.",
+   "Na aba Pertences, confira a lista e ajuste as quantidades."
+  ],
+  actions:[['Pertences','pertences','10']],
+  rules:[['Posses iniciais','regras-3-02-6-2'],['Lista de itens','regras-3-02-6-3']]},
+ {title:'Caracterizações e história',
+  instructions:[
+   "Na aba Biografia, clique em Escolher Caracterizações. Use Adicionar à biografia nas opções combinadas com o mestre.",
+   "Clique em Editar biografia e escreva de onde você veio, por que saiu em aventura e quem quer encontrar ou proteger. Clique em Salvar biografia.",
+   "No topo da página, clique em Salvar JSON. Na janela que abrir, clique em Baixar JSON da ficha. Depois clique em Concluir ajuda."
+  ],
+  actions:[['Biografia','descricao'],['Escolher Caracterizações','descricao','traits']], rules:[['Adquirir Caracterizações','complementares-162']]}
+];
+let helpStep = 0;
+let sheetHighlightTimer;
+let clearSheetHighlight = () => {};
+function sheetRuleLink(id) { return 'https://tagmarzero.com/zeropedia/#verbete/' + encodeURIComponent(id); }
+function sheetRuleText(text) {
+ return '<div class="sheet-rule-text">' + e(text || '').replace(/\r?\n/g,'<br>') + '</div>';
+}
+function showSheetRule(id, fallbackTitle) {
+ const rule = sheetHelpRules.get(id);
+ const link = '<p><a href="' + sheetRuleLink(id) + '" target="_blank" rel="noopener">Consultar na ZeroPédia ↗</a></p>';
+ modal(rule?.title || fallbackTitle, (rule ? sheetRuleText(rule.text) : '<p>Abra a referência completa na ZeroPédia.</p>') + link,
+  [{label:'Voltar à ajuda',run:close}]);
+}
+function showHelpCatalog(category) {
+ setItemPanel('catalog');
+ catalogType.value = category;
+ $('#catalog-search').value = '';
+ resetCatalogTree(category);
+}
+function highlightSheetFields(elements, className) {
+ if (!elements.length) return false;
+ clearTimeout(sheetHighlightTimer);
+ clearSheetHighlight();
+ elements.forEach(element => element.classList.add(className));
+ elements[0].scrollIntoView({block:'center',inline:'nearest'});
+ clearSheetHighlight = () => elements.forEach(element => element.classList.remove(className));
+ sheetHighlightTimer = setTimeout(clearSheetHighlight,4000);
+ return true;
+}
+function highlightAttributeAdjustment() {
+ const row = $('#sheet input[name="system.atributos.INT"]')?.closest('tr');
+ return highlightSheetFields(row ? [row] : [],'sheet-adjust-highlight');
+}
+function highlightSheetValues() {
+ const keys = new Set(['ef','eh','karma','absorcao','rf','rm','vb','vbe']);
+ const fields = $$('#sheet .tab[data-tab="basico"] input[name^="system."]')
+  .filter(field => keys.has(field.name.split('.')[1]));
+ const cells = [...new Set(fields.map(field => field.closest('td')).filter(Boolean))];
+ return highlightSheetFields(cells,'sheet-value-highlight');
+}
+// Tabelas de criação do Livro de Regras 3.02 §2.2 e de Terras Selvagens §§2.10 (Idade, Altura e Peso).
+const helpRaceProfiles = {
+ humano:['16 a 25 anos','1,77 m','77 kg'],
+ pequenino:['16 a 25 anos','1,14 m','30 kg'],
+ anao:['25 a 50 anos','1,39 m','53 kg'],
+ 'meio elfo':['25 a 50 anos','1,68 m','69 kg'],
+ 'elfo florestal':['25 a 75 anos','1,63 m','53 kg'],
+ 'elfo dourado':['25 a 75 anos','1,63 m','53 kg'],
+ 'elfo sombrio':['Por volta de 25 anos','1,55 m','45 kg',true],
+ goura:['A idade adulta chega nos primeiros anos de vida','1,80 m','90 kg',true],
+ 'meio orco':['Adolescência por volta dos 14 anos','1,70 m','70 kg',true],
+ napoi:['Maturidade por volta dos 18 anos','1,65 m','40 kg',true],
+ sekbete:['Adolescência por volta dos 40 anos','2,10 m','170 kg',true]
+};
+function profileReference() {
+ const race = session?.actor.items.find(item => item.type === 'Raca')?.name || session?.actor.system.raca;
+ return helpRaceProfiles[searchKey(race || '').replace(/-/g,' ').replace(/\s+/g,' ').trim()];
+}
+function helpProfileRows() {
+ const profession = session?.actor.system.profissao;
+ const [age, height, weight] = profileReference() || [];
+ return [
+  ['Classe social', 'A regra complementar usa Pessoas Livres como ponto de partida. Combine outra classe com o mestre.'],
+  ['Especialização', (profession ? 'Para ' + profession + ', ' : '') + 'deixe em branco até o mestre autorizar. A recomendação do livro é por volta do Estágio 5.'],
+  ['Idade', age || 'Escolha uma idade compatível com a raça.'],
+  ['Altura', height ? height + ' como referência' : 'Consulte a altura típica da raça e preencha em metros.'],
+  ['Peso', weight ? weight + ' como referência' : 'Consulte o peso típico da raça e preencha em quilos.']
+ ];
+}
+function highlightNamedFields(keys) {
+ const fields = keys.map(key=>$('#sheet .tab[data-tab="basico"] [name="system.'+key+'"]')).filter(Boolean);
+ return highlightSheetFields(fields,'sheet-input-highlight');
+}
+const helpHighlighters = {
+ profile:()=>highlightNamedFields(['classe_social','especializacao','idade','altura','peso']),
+ attributes:highlightAttributeAdjustment,
+ values:highlightSheetValues,
+ initiative:()=>highlightNamedFields(['iniciativa'])
+};
+function helpTarget(destination, category, anchor) {
+ setTab(destination);
+ if (category === 'traits') { showCharacterizations(); return; }
+ let target = $('#sheet .tab[data-tab="' + destination + '"]');
+ if (category) {
+  showHelpCatalog(category);
+  target = $('.item-creator');
+ } else if (anchor === 'weapon-groups') {
+  target = $('#sheet .weapon-group-help')?.closest('tr') || target;
+ } else if (helpHighlighters[anchor]?.()) {
+  return;
+ }
+ target?.scrollIntoView({block:'nearest'});
+}
+function renderCreationHelp() {
+ const guide = $('#sheet-creation-help');
+ const {title,instructions,note,actions,rules,catalog,focus} = creationHelp[helpStep];
+ const category = catalog || actions.find(action => /^\d{2}(?:\.\d+)?$/.test(action[2] || ''))?.[2];
+ setTab(actions[0][1]);
+ if (category) showHelpCatalog(category);
+ clearTimeout(sheetHighlightTimer);
+ clearSheetHighlight();
+ if (focus) helpHighlighters[focus]?.();
+ else if (category && matchMedia('(max-width:760px)').matches) $('.item-creator').scrollIntoView({block:'start'});
+ $('#creation-help-step').textContent = 'Passo ' + (helpStep + 1) + ' de ' + creationHelp.length;
+ $('#creation-help-topic').textContent = title;
+ const list = $('#creation-help-instructions');
+ list.replaceChildren(...instructions.map(text => {
+  const item = document.createElement('li');
+  item.textContent = text;
+  return item;
+ }));
+ const tip = $('#creation-help-note');
+ tip.textContent = note || '';
+ tip.hidden = !note;
+ $('#creation-help-body').scrollTop = 0;
+ const profile = $('#creation-help-profile');
+ profile.replaceChildren();
+ if (focus === 'profile') for (const [label,value] of helpProfileRows()) {
+  const item = document.createElement('li');
+  const name = document.createElement('strong');
+  name.textContent = label;
+  item.append(name, ' — '+value);
+  profile.append(item);
+ }
+ const shortcuts = $('#creation-help-shortcuts');
+ shortcuts.replaceChildren();
+ for (const [label,destination,category,anchor] of actions) {
+  const button = document.createElement('button');
+  button.type = 'button'; button.textContent = label;
+  button.onclick = () => helpTarget(destination,category,anchor);
+  shortcuts.append(button);
+ }
+ const reading = $('#creation-help-reading');
+ reading.replaceChildren();
+ const visibleRules = focus === 'profile' && profileReference()?.[3]
+  ? [['Idade nas Terras Selvagens','ats-m030-041'],['Altura e peso nas Terras Selvagens','ats-m030-042'],...rules.slice(1)] : rules;
+ for (const [label,id] of visibleRules) {
+  const button = document.createElement('button');
+  button.type = 'button'; button.textContent = label;
+  button.onclick = () => showSheetRule(id,label);
+  reading.append(button);
+ }
+ $('#creation-help-back').disabled = helpStep === 0;
+ $('#creation-help-next').textContent = helpStep === creationHelp.length - 1 ? 'Concluir ajuda' : 'Próximo →';
+ if (!guide.hidden) $('#creation-help-topic').focus({preventScroll:true});
+}
+function toggleCreationHelp(open) {
+ $('#sheet-creation-help').hidden = !open;
+ $('#start-creation-help').setAttribute('aria-expanded',String(open));
+ if (open) {
+  renderCreationHelp();
+  if (!creationHelp[helpStep].focus) $('#sheet-creation-help').scrollIntoView({block:'nearest'});
+ } else {
+  const trigger = $('#start-creation-help');
+  trigger.focus({preventScroll:true});
+  trigger.scrollIntoView({block:'nearest'});
+ }
+}
+$('#start-creation-help').onclick = () => toggleCreationHelp($('#sheet-creation-help').hidden);
+$('#creation-help-close').onclick = () => toggleCreationHelp(false);
+$('#creation-help-back').onclick = () => { if (helpStep > 0) { helpStep--; renderCreationHelp(); } };
+$('#creation-help-next').onclick = () => {
+ if (helpStep === creationHelp.length - 1) toggleCreationHelp(false);
+ else { helpStep++; renderCreationHelp(); }
+};
+$('#sheet-creation-help').addEventListener('keydown', event => {
+ if (event.key === 'Escape') { event.stopPropagation(); toggleCreationHelp(false); }
+});
+
+function existingCharacterizations(actor) {
+ const values = actor.flags?.tagmarzero?.characterizations;
+ return Array.isArray(values) ? values.filter(value => value && typeof value.id === 'string' && typeof value.title === 'string') : [];
+}
+function biographyWithoutCharacterizations(html) {
+ if (!String(html).includes('data-tagmar-characterizations')) return html;
+ const template = document.createElement('template');
+ template.innerHTML = html;
+ template.content.querySelectorAll('[data-tagmar-characterizations="1"]').forEach(section => section.remove());
+ return template.innerHTML;
+}
+function biographyWithCharacterizations(html, values) {
+ const base = biographyWithoutCharacterizations(html || '');
+ if (!values.length) return base;
+ const rows = values.map(value => '<li><strong>' + e(value.title) + '</strong>'
+  + (value.note ? ' — ' + e(value.note) : '') + '</li>');
+ return base + '<div data-tagmar-characterizations="1"><h3>Caracterizações</h3><ul>' + rows.join('') + '</ul></div>';
+}
+function showCharacterizations() {
+ const chosen = new Map(existingCharacterizations(session.actor).map(value => [value.id,{...value}]));
+ const allGroups = [...new Set(sheetHelpData.traits.map(trait => trait.group))];
+ modal('Escolher Caracterizações',
+  '<p>Consulte os custos e requisitos da regra. As escolhas são anotadas na Biografia.</p>'
+  + '<div class="sheet-trait-rules"><button type="button" id="trait-rule-toggle" aria-expanded="false">Como adquirir Caracterizações</button>'
+  + '<div id="trait-rule" hidden></div></div>'
+  + '<div class="sheet-trait-filters"><label for="trait-search">Buscar Caracterização<input id="trait-search" type="search"></label>'
+  + '<label for="trait-group">Grupo<select id="trait-group"><option value="">Todos</option>'
+  + allGroups.map(group => '<option value="' + e(group) + '">' + e(group) + '</option>').join('') + '</select></label></div>'
+  + '<section aria-label="Caracterizações na ficha"><h3>Na biografia</h3><div id="trait-selected"></div></section>'
+  + '<section aria-label="Caracterizações disponíveis"><h3>Opções</h3><div id="trait-results"></div><button type="button" id="trait-more" hidden>Mostrar mais</button></section>',
+  [{label:'Cancelar',run:close},{label:'Salvar na biografia',primary:true,run:()=>{
+    const values = [...chosen.values()];
+    checkpoint('Editar Caracterizações', actor => {
+     actor.flags = object(actor.flags) ? actor.flags : {};
+     actor.flags.tagmarzero = object(actor.flags.tagmarzero) ? actor.flags.tagmarzero : {};
+     actor.flags.tagmarzero.characterizations = values;
+     actor.system.descricao = biographyWithCharacterizations(actor.system.descricao,values);
+    },{calculate:false});
+    close();
+  }}]);
+ let limit = 18;
+ const search = $('#trait-search');
+ const group = $('#trait-group');
+ const results = $('#trait-results');
+ const selected = $('#trait-selected');
+ const more = $('#trait-more');
+ function renderSelected() {
+  selected.replaceChildren();
+  for (const value of chosen.values()) {
+   const row = document.createElement('div');
+   row.className = 'sheet-trait-selected';
+   row.innerHTML = '<strong>' + e(value.title) + '</strong><label>Detalhe ou custo escolhido'
+    + '<input maxlength="240" value="' + e(value.note || '') + '"></label><button type="button">Retirar</button>';
+   row.querySelector('input').oninput = event => { value.note = event.target.value; };
+   row.querySelector('button').setAttribute('aria-label','Retirar ' + value.title);
+   row.querySelector('button').onclick = () => { chosen.delete(value.id); renderSelected(); renderOptions(); search.focus(); };
+   selected.append(row);
+  }
+  if (!chosen.size) selected.textContent = 'Nenhuma Caracterização escolhida.';
+ }
+ function renderOptions() {
+  const term = searchKey(search.value);
+  const matches = sheetHelpData.traits.filter(trait => !chosen.has(trait.id) && (!group.value || group.value === trait.group)
+   && searchKey(trait.title + ' ' + trait.group).includes(term));
+  results.replaceChildren();
+  for (const trait of matches.slice(0,limit)) {
+   const row = document.createElement('details');
+   row.className = 'sheet-trait-option';
+   row.innerHTML = '<summary>' + e(trait.title) + ' <small>' + e(trait.group) + '</small></summary>';
+   row.addEventListener('toggle', () => {
+    if (!row.open || row.childElementCount > 1) return;
+    row.insertAdjacentHTML('beforeend',sheetRuleText(trait.text || sheetHelpRules.get(trait.sourceId)?.text));
+    const add = document.createElement('button');
+    add.type = 'button'; add.textContent = 'Adicionar à biografia';
+    add.onclick = () => {
+     chosen.set(trait.id,{id:trait.id,title:trait.title,note:''});
+     renderSelected(); renderOptions(); search.focus();
+    };
+    row.insertAdjacentHTML('beforeend','<a href="' + sheetRuleLink(trait.sourceId || trait.id) + '" target="_blank" rel="noopener">Abrir na ZeroPédia ↗</a>');
+    row.append(add);
+   });
+   results.append(row);
+  }
+  if (!matches.length) results.textContent = sheetTraits.size ? 'Nenhuma Caracterização encontrada.' : 'O catálogo está disponível na versão publicada da Ficha de Bolso.';
+  more.hidden = matches.length <= limit;
+ }
+ $('#trait-rule-toggle').onclick = event => {
+  const rulePanel = $('#trait-rule'), open = rulePanel.hidden;
+  rulePanel.hidden = !open;
+  event.currentTarget.setAttribute('aria-expanded',String(open));
+  if (open && !rulePanel.childElementCount) {
+   const rule = sheetHelpRules.get('complementares-162');
+   rulePanel.innerHTML = (rule ? sheetRuleText(rule.text) : '')
+    + '<p><a href="' + sheetRuleLink('complementares-162') + '" target="_blank" rel="noopener">Consultar a regra completa ↗</a></p>';
+  }
+ };
+ search.oninput = group.onchange = () => { limit = 18; renderOptions(); };
+ more.onclick = () => { limit += 18; renderOptions(); };
+ renderSelected(); renderOptions();
+ search.focus();
+}
+
 function createCharacter(){
  if(!replaceAllowed())return;
  modal('Criar personagem',`<label>Nome<input id="character-name" maxlength="100" placeholder="Nome do personagem"></label>
-  <label>Sistema do mundo<select id="character-system"><option value="tagmar3er-oficial">Tagmar 3ER Oficial</option><option value="tagmar_rpg">Tagmar XXX</option></select></label>
+  <label>Sistema do mundo<select id="character-system"><option value="tagmar3er-oficial" selected>Tagmar 3ER Oficial</option><option value="tagmar_rpg">Tagmar Master</option></select></label>
   <label>Cálculo dos atributos<select id="character-mode"><option value="pontos">Por pontos</option><option value="sorteio">Por sorteio</option></select></label>
-  <p>O personagem começa no estágio 1. Escolha uma raça e uma profissão no Compêndio e preencha os atributos conforme sua mesa.</p>`, [
+  <p>O personagem começa no estágio 1. Escolha uma raça e uma profissão no Compêndio e preencha os atributos conforme sua mesa.</p>
+  <p class="guide-hint">Primeira vez? <a href="https://tagmarzero.com/zeropedia/#criar" target="_blank" rel="noopener">Veja o guia passo a passo ↗</a> — explica cada escolha com o texto do Livro de Regras.</p>`, [
   {label:'Cancelar',run:close},
   {label:'Criar ficha',primary:true,run:()=>{
    const name=$('#character-name').value.trim();
@@ -302,6 +718,7 @@ $('#sheet-body').addEventListener('click',event=>{
   if(link.matches('.tagmar-portrait')){$('#image-file').click();return;}
   if(link.matches('.showImg')){checkpoint('Alternar apresentação de itens',a=>{const groups=String(a.system.combos??'').split(',').filter(Boolean),group=link.dataset.itemId;set(a,'system.combos',groups.includes(group)?groups.filter(g=>g!==group).join(','):[...groups,group].join(','));},{calculate:false});return;}
   if(link.matches('.edit-biography')){showBiography();return;}
+  if(link.matches('.edit-characterizations')){showCharacterizations();return;}
   if(link.matches('.subir_estagio')){showLevel();return;}
   if(link.matches('.addGrupoArmas,.subGrupoArmas')){const group=link.dataset.itemId;if(!Object.hasOwn(viewActor(session.actor).system.grupos,group))return;checkpoint('Alterar grupo de armas',a=>set(a,'system.grupos.'+group,Math.max(0,Number(get(a,'system.grupos.'+group)??0)+(link.matches('.addGrupoArmas')?1:-1))));return;}
   if(link.matches('.displayRaca,.displayProf')){const type=link.matches('.displayRaca')?'Raca':'Profissao';const found=session.actor.items.find(i=>i.type===type);if(found)editItem(found._id);else createItem(type);return;}
@@ -548,8 +965,10 @@ for(const button of $$('.item-panel-tab'))button.onclick=()=>setItemPanel(button
 const catalogCategories=[
  ['01','Raças'],['02','Profissões'],['03','Habilidades'],['04','Combate'],
  ['05','Defesa'],['06','Técnicas de Combate'],['07','Magias'],
+ ['07.1','Magias de ataque'],['07.2','Magias de cura'],
  ['08','Magias Ancestrais'],['09','Magias Perdidas'],['10','Pertences e Afins']
 ];
+const combatSpellCategories = {'MAGIAS DE ATAQUE':'07.1','MAGIAS DE CURA':'07.2'};
 const catalogNodes=[];
 function makeCatalogFolder(name,category){
  const folder={id:catalogNodes.length,name,category,children:new Map(),items:[],directItems:[]};
@@ -578,6 +997,15 @@ for(const [index,item] of CATALOG.entries()){
   folder.items.push(entry);
  }
  folder.directItems.push(entry);
+ const subcategory = item.category === '07' && item.type === 'Combate' && combatSpellCategories[item.folders[1]];
+ if (subcategory) {
+  const collection = catalogRoot.children.get(subcategory);
+  const origin = item.source === 'Criação de Fichas' ? 'Reinos Conhecidos' : item.source;
+  const shortcut = {...entry, location:origin, key:entry.key+' '+searchKey(origin)};
+  collection.showLocation = true;
+  collection.items.push(shortcut);
+  collection.directItems.push(shortcut);
+ }
 }
 const catalogType=$('#catalog-type');
 catalogType.innerHTML='<option value="">Todas as categorias</option>'+catalogCategories
@@ -610,7 +1038,7 @@ function populateCatalogFolder(details){
  content.innerHTML=`
   ${skills?`<button type="button" class="catalog-add-skills" data-catalog-skills="${folder.id}">${skillLabel} (${skills})</button>`:''}
   ${folder.children.size?`<ul class="catalog-branches">${catalogBranches(folder.children.values())}</ul>`:''}
-  <ul class="catalog-rows">${catalogRows(folder.directItems.slice(0,catalogPageSize))}</ul>
+  <ul class="catalog-rows">${catalogRows(folder.directItems.slice(0,catalogPageSize),folder.showLocation)}</ul>
   ${folder.directItems.length>catalogPageSize?`<button type="button" class="catalog-more" data-catalog-more="${folder.id}">Mostrar mais</button>`:''}`;
 }
 function filterCatalog(){
@@ -706,10 +1134,11 @@ catalogScroll.onclick=event=>{
  if(!button)return;
  if(button.hasAttribute('data-catalog-more')){
   const folderId=button.dataset.catalogMore;
-  const entries=folderId===''?catalogMatches:catalogNodes[Number(folderId)].directItems;
+  const folder=folderId===''?null:catalogNodes[Number(folderId)];
+  const entries=folder?folder.directItems:catalogMatches;
   const list=button.previousElementSibling;
   const start=list.childElementCount;
-  list.insertAdjacentHTML('beforeend',catalogRows(entries.slice(start,start+catalogPageSize),folderId===''));
+  list.insertAdjacentHTML('beforeend',catalogRows(entries.slice(start,start+catalogPageSize),!folder||folder.showLocation));
   button.hidden=list.childElementCount>=entries.length;
  }else if(button.hasAttribute('data-catalog-skills')){
   addCatalogSkills(catalogNodes[Number(button.dataset.catalogSkills)].items);
@@ -812,6 +1241,24 @@ function showHelpTip(trigger){
  hideHelpTip();
  helpTrigger=trigger;
  helpTip.textContent=trigger.dataset.tip;
+ const weaponGroup = trigger.classList.contains('weapon-group-help');
+ helpTip.classList.toggle('weapon-group-tooltip',weaponGroup);
+ if (weaponGroup) {
+  const names = JSON.parse(trigger.dataset.weaponNames);
+  if (names.length) {
+   const list = document.createElement('ul');
+   for (const name of names) {
+    const item = document.createElement('li');
+    item.textContent = name;
+    list.append(item);
+   }
+   helpTip.append(list);
+  } else {
+   const empty = document.createElement('p');
+   empty.textContent = 'Sem armas listadas no Compêndio para este grupo.';
+   helpTip.append(empty);
+  }
+ }
  trigger.setAttribute('aria-describedby',helpTip.id);
  helpTip.hidden=false;
 
@@ -820,7 +1267,11 @@ function showHelpTip(trigger){
  const margin=8;
  let left=anchor.right;
  let top=anchor.top;
- if(left+width>innerWidth-margin){
+ if(weaponGroup){
+  left=anchor.left+(anchor.width-width)/2;
+  top=anchor.bottom+4;
+  if(top+height>innerHeight-margin && anchor.top-height-4>=margin)top=anchor.top-height-4;
+ }else if(left+width>innerWidth-margin){
   left=anchor.left-width;
   if(left<margin){
    left=anchor.left;
