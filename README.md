@@ -4,7 +4,7 @@ Editor local para criar, consultar e editar personagens do Tagmar fora do Foundr
 
 Abra o editor no navegador ou na versão portátil para Windows. Você pode montar ou consultar seu personagem com o Foundry do mestre fechado. O editor funciona offline e os arquivos ficam no seu computador.
 
-**[Baixar o portátil para Windows (.exe)](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.2.1/Tagmar-Ficha-de-Bolso.exe)** · **[Baixar o editor HTML](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.2.1/Ficha.de.Bolso.html)** · [Baixar o pacote ZIP](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.2.1/tagmar-ficha-de-bolso-1.2.1.zip)
+**[Baixar o portátil para Windows (.exe)](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.2.2/Tagmar-Ficha-de-Bolso.exe)** · **[Baixar o editor HTML](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.2.2/Ficha.de.Bolso.html)** · [Baixar o pacote ZIP](https://github.com/piratabarba-blip/tagmar-ficha-de-bolso/releases/download/v1.2.2/tagmar-ficha-de-bolso-1.2.2.zip)
 
 Na **1.2**, a criação tem um guia de 15 passos e os Grupos de Armas ficam em Combate, com uma lista de armas por sigla. [Histórico de versões](CHANGELOG.md)
 

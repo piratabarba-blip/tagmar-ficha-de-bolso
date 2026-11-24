@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 1.2.2
+
+- O nível comprado de um Grupo de Armas fica limitado ao Estágio do personagem.
+
 ## 1.2.1
 
 - Salvar JSON abre uma janela curta para baixar a ficha. A lista completa e o relatório ficam em Conferir alterações.

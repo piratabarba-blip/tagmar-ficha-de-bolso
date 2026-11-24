@@ -720,7 +720,19 @@ $('#sheet-body').addEventListener('click',event=>{
   if(link.matches('.edit-biography')){showBiography();return;}
   if(link.matches('.edit-characterizations')){showCharacterizations();return;}
   if(link.matches('.subir_estagio')){showLevel();return;}
-  if(link.matches('.addGrupoArmas,.subGrupoArmas')){const group=link.dataset.itemId;if(!Object.hasOwn(viewActor(session.actor).system.grupos,group))return;checkpoint('Alterar grupo de armas',a=>set(a,'system.grupos.'+group,Math.max(0,Number(get(a,'system.grupos.'+group)??0)+(link.matches('.addGrupoArmas')?1:-1))));return;}
+  if(link.matches('.addGrupoArmas,.subGrupoArmas')){
+   const group=link.dataset.itemId;
+   const {grupos,estagio}=viewActor(session.actor).system;
+   if(!Object.hasOwn(grupos,group))return;
+   const increasing=link.matches('.addGrupoArmas');
+   const next=Math.max(0,Number(grupos[group])+(increasing?1:-1));
+   if(increasing && next>Number(estagio)){
+    toast(`O nível do grupo ${group} não pode passar do Estágio ${estagio}.`);
+    return;
+   }
+   checkpoint('Alterar grupo de armas',actor=>set(actor,'system.grupos.'+group,next));
+   return;
+  }
   if(link.matches('.displayRaca,.displayProf')){const type=link.matches('.displayRaca')?'Raca':'Profissao';const found=session.actor.items.find(i=>i.type===type);if(found)editItem(found._id);else createItem(type);return;}
   const createClass={newHabilidade:'Habilidade',newCombat:'Combate',newMagia:'Magia',newPertence:'Pertence',newEfeito:'Efeito'};
   for(const [css,type] of Object.entries(createClass))if(link.classList.contains(css)){createItem(type);return;}
