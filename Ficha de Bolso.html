@@ -6401,7 +6401,7 @@ function _setPontosRaca(sheetData, updatePers){ // Função Apenas para ficha Al
 
 return {_preparaCaracRaciais,_caracSort,_calculaAjuste,_preparaEfeitosAtributos,_prepareValorTeste,_attProfissao,_attCargaAbsorcaoDefesa,_calculaEhTemporaria,_fisicoParaEh,_attEhTemporaria,_attEfEhVB,_attProximoEstag,_attKarmaMax,_attRM,_attRF,_updateHabilItems,_updateTencnicasItems,_updateMagiasItems,_updateCombatItems,_attDefesaNPC,_setPontosRaca};})();
 
-const VERSION='1.2.0';
+const VERSION='1.2.1';
 const ATTRS=['INT','AUR','CAR','FOR','FIS','AGI','PER'];
 const TYPES=schema.Item.types;
 const clone=value=>structuredClone(value);
@@ -10517,8 +10517,31 @@ function showAdvanced(){modal('Dados avançados da ficha',`<p>Edite o JSON compl
 $('#advanced').onclick=showAdvanced;
 function download(name,text,type='application/json') {const url=URL.createObjectURL(new Blob([text],{type}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);}
 function fileBase(){return session.actor.name.replace(/[<>:"/\\|?*\u0000-\u001F]/g,'-').slice(0,100)||'personagem';}
-function review(exporting=false){const diff=changes(session.original,session.actor);modal(exporting?'Salvar ficha para o Foundry':'Conferir alterações',`<p><strong>${diff.length} alterações</strong> em relação ao arquivo aberto. IDs, flags, efeitos e campos desconhecidos são mantidos, salvo alterações explícitas.</p><p>O arquivo será baixado como uma nova cópia. No Foundry, faça backup e importe primeiro em uma cópia do personagem. Se o mestre editou a ficha depois da sua exportação, compare as duas versões antes de substituir.</p><div class="diff-list">${diff.slice(0,150).map(d=>`<article><b>${e(d.path)}</b><del>${e(reviewValue(d.before,d.path))}</del><ins>${e(reviewValue(d.after,d.path))}</ins></article>`).join('')||'<p>Nenhuma alteração.</p>'}${diff.length>150?'<p>Lista reduzida a 150 campos. O relatório JSON contém todas as alterações.</p>':''}</div>`,[{label:'Fechar',run:close},{label:'Baixar relatório',run:()=>download(fileBase()+'-alteracoes.json',JSON.stringify({editor:VERSION,date:new Date().toISOString(),source:sourceName,changes:diff},null,2))},...(exporting?[{label:'Baixar JSON da ficha',primary:true,run:()=>{download(fileBase()+'-editado.json',serialize(session.actor));session.saved=JSON.stringify(session.actor);close();render();scheduleDraft();toast('Download solicitado. Confira o arquivo na pasta Downloads.');}}]:[])]);}
-$('#review').onclick=()=>review();$('#save').onclick=()=>review(true);
+function review(){
+ const diff=changes(session.original,session.actor);
+ const entries=diff.slice(0,150).map(({path,before,after})=>
+  `<article><b>${e(path)}</b><del>${e(reviewValue(before,path))}</del><ins>${e(reviewValue(after,path))}</ins></article>`).join('');
+ const limit=diff.length>150?'<p>Lista reduzida a 150 campos. O relatório JSON contém todas as alterações.</p>':'';
+ modal('Conferir alterações',`<p><strong>${diff.length} alterações</strong> em relação ao arquivo aberto.</p><div class="diff-list">${entries||'<p>Nenhuma alteração.</p>'}${limit}</div>`,[
+  {label:'Fechar',run:close},
+  {label:'Baixar relatório',run:()=>download(fileBase()+'-alteracoes.json',JSON.stringify({editor:VERSION,date:new Date().toISOString(),source:sourceName,changes:diff},null,2))}
+ ]);
+}
+function showSave(){
+ modal('Salvar ficha para o Foundry','<p>Baixe uma cópia em JSON para importar no Foundry.</p>',[
+  {label:'Fechar',run:close},
+  {label:'Baixar JSON da ficha',primary:true,run:()=>{
+   download(fileBase()+'-editado.json',serialize(session.actor));
+   session.saved=JSON.stringify(session.actor);
+   close();
+   render();
+   scheduleDraft();
+   toast('Download solicitado. Confira o arquivo na pasta Downloads.');
+  }}
+ ]);
+}
+$('#review').onclick=review;
+$('#save').onclick=showSave;
 $('#portrait').onclick=()=>$('#image-file').click();$('#image-file').onchange=async event=>{try{const file=event.target.files[0];if(!file)return;if(file.size>4*1024*1024||!['image/png','image/jpeg','image/webp'].includes(file.type))throw Error('Use PNG, JPEG ou WebP de até 4 MB.');portraitPreview=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(file);});render();toast('Retrato carregado apenas para visualização local. O caminho da imagem no Foundry foi preservado.');}catch(err){fail(err);}finally{event.target.value='';}};
 function preparePrint(){
  if(session)$('#print-sheet').innerHTML=renderPrintSheet(viewActor(session.actor),mode,portraitPreview);
@@ -10622,7 +10645,7 @@ document.addEventListener('keydown',event=>{
  event.preventDefault();
  if($('#modal').open)return;
  if(document.activeElement.matches('#sheet input[name],#sheet textarea[name]'))document.activeElement.blur();
- review(true);
+ showSave();
 });
 try{const draft=JSON.parse(localStorage.getItem(DRAFT)??'null');if(draft){validateActor(draft.actor);validateActor(draft.original);if(!['preserve','pontos','sorteio'].includes(draft.mode))throw Error('Modo inválido');$('#recovery').innerHTML=`<p>Rascunho encontrado: <strong>${e(draft.actor.name)}</strong></p><button id="restore">Recuperar rascunho</button> <button id="forget">Apagar rascunho</button>`;$('#restore').onclick=()=>load(draft.actor,draft.name,draft);$('#forget').onclick=()=>{localStorage.removeItem(DRAFT);$('#recovery').replaceChildren();};}}catch{ /* armazenamento indisponível não impede abrir e salvar arquivos */ }
 

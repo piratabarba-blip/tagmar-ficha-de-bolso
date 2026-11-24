@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 1.2.1
+
+- Salvar JSON abre uma janela curta para baixar a ficha. A lista completa e o relatório ficam em Conferir alterações.
+
 ## 1.2.0
 
 - Guia de criação em 15 passos, com atalhos para o Compêndio e realces na ficha.
